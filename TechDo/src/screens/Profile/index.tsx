@@ -192,7 +192,7 @@ const Profile: React.FC = () => {
                   placeholder={'Enter your first name'}
                   formikError={formik.errors?.name}
                   formikTouched={formik.touched.name}
-                  placeholderColor={palette.text?.primary}
+                  placeholderColor={palette.grey[500]}
                   onChangeText={(text: string) =>
                     formik.setFieldValue('name', text)
                   }
@@ -220,7 +220,7 @@ const Profile: React.FC = () => {
                   placeholder={'Enter your email'}
                   formikError={formik.errors?.email}
                   formikTouched={formik.touched.email}
-                  placeholderColor={palette.text?.primary}
+                  placeholderColor={palette.grey[500]}
                   onChangeText={(text: string) =>
                     formik.setFieldValue('email', text)
                   }
