@@ -11,7 +11,7 @@ import {
 // ** Third Party Packages
 import * as Yup from 'yup';
 import {useFormik} from 'formik';
-import {DrawerActions} from '@react-navigation/native';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -46,6 +46,7 @@ const Profile: React.FC = () => {
 
   // ** Theme && Navigation
   const {palette} = useAppTheme();
+  const navigation = useNavigation();
   const {theme, toggleTheme} = useTheme();
 
   // ** States
@@ -87,7 +88,7 @@ const Profile: React.FC = () => {
         showChat={{badge: false, chat: false}}
         showNotification={{notification: false, badge: false}}
         // @ts-ignore
-        onPressBar={() => DrawerActions.openDrawer()}
+        onPressBar={() => navigation.dispatch(DrawerActions.openDrawer())}
       />
 
       <ProfileContainer>

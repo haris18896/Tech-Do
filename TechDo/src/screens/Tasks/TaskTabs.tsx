@@ -66,6 +66,7 @@ const TaskTabs: React.FC = () => {
                 textTransform: 'none',
               },
             }}
+            ta
           >
             <Tab.Screen
               name="Daily"
