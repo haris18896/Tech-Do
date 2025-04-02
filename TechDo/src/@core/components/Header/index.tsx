@@ -188,9 +188,7 @@ const BarHeader: React.FC<BarHeaderProps> = props => {
         )}
         <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
           <Icon
-            name={
-                theme === 'dark' ? 'white-balance-sunny' : 'weather-night'
-              }
+            name={theme === 'dark' ? 'white-balance-sunny' : 'weather-night'}
             size={themeUtils.WP(8)}
             color={theme === 'dark' ? '#d1b32e' : '#fff'}
           />

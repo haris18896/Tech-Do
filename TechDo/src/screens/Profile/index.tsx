@@ -96,7 +96,8 @@ const Profile: React.FC = () => {
       style={[styles.MainContainer, {backgroundColor: palette.primary.main}]}>
       <BarHeader
         showNotification={{notification: false, badge: false}}
-        onBack={() => navigation.goBack()}
+        // @ts-ignore
+        onPressBar={() => navigation.openDrawer()}
       />
 
       <ProfileContainer>
