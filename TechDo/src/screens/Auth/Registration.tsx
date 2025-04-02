@@ -24,12 +24,9 @@ import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
 
 // ** Custom Components
-import {
-  AuthContainer,
-  UserActivityWrapper,
-} from '../../styles/screens/Auth';
+import {AuthContainer, UserActivityWrapper} from '../../styles/screens/Auth';
 import {ButtonAction} from '../../components';
-import { TextInput} from '../../@core/components';
+import {TextInput} from '../../@core/components';
 import {ColumnStart, RowCenter, TextItem} from '../../styles/infrustucture';
 
 // ** Assets
@@ -44,11 +41,11 @@ YupPassword(Yup);
 
 const Registration: React.FC = () => {
   // ** Refs
-  const email_ref = useRef<typeof TextInput>(null);
   const name_ref = useRef<typeof TextInput>(null);
+  const email_ref = useRef<typeof TextInput>(null);
+  const phone_ref = useRef<typeof TextInput>(null);
   const password_ref = useRef<typeof TextInput>(null);
   const confirm_password_ref = useRef<typeof TextInput>(null);
-  const phone_ref = useRef<typeof TextInput>(null);
 
   // ** Theme && Navigation
   const {palette} = useAppTheme();
@@ -270,7 +267,7 @@ const Registration: React.FC = () => {
               />
 
               <UserActivityWrapper
-              marginTop={4}
+                marginTop={4}
                 direction={'column'}
                 alignItems={'flex-end'}
                 justifyContent={'flex-end'}>
@@ -289,9 +286,7 @@ const Registration: React.FC = () => {
               </UserActivityWrapper>
 
               <RowCenter style={{marginTop: themeUtils?.WP(4)}}>
-                <Pressable
-                  disabled={false}
-                  onPress={() => navigation.goBack()}>
+                <Pressable disabled={false} onPress={() => navigation.goBack()}>
                   <TextItem color={palette?.secondary?.main}>
                     Already have an account? Sign in
                   </TextItem>

@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
-const AllGoals: React.FC = () => {
+const Daily: React.FC = () => {
   return (
     <View>
-      <Text>All Goals</Text>
+      <Text>Daily</Text>
     </View>
   );
 };
 
-export default AllGoals;
+export default Daily;

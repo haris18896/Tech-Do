@@ -18,7 +18,7 @@ import {PageCenter, TextItem} from '../../styles/infrustucture';
 import {appImages} from '../../assets';
 
 // ** Third Party
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, CommonActions} from '@react-navigation/native';
 
 // ** Types
@@ -66,12 +66,12 @@ const Splash: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(async () => {
       try {
-        const isLoggedIn = await AsyncStorage.getItem('token');
-        const initialRouteName = isLoggedIn ? 'App' : 'Auth';
+        // const isLoggedIn = await AsyncStorage.getItem('token');
+        // const initialRouteName = isLoggedIn ? 'App' : 'Auth';
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{name: initialRouteName}],
+            routes: [{name: 'App'}],
           }),
         );
       } catch (error) {
