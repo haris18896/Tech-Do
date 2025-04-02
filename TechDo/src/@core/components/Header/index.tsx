@@ -116,7 +116,7 @@ const BarHeader: React.FC<BarHeaderProps> = props => {
           <Icon
             name={'menu'}
             size={themeUtils?.WP(8)}
-            color={menuColor ? menuColor : 'white'}
+            color={menuColor ? menuColor : palette.text.primary}
           />
         </TouchableOpacity>
       )}
@@ -190,7 +190,7 @@ const BarHeader: React.FC<BarHeaderProps> = props => {
           <Icon
             name={theme === 'dark' ? 'white-balance-sunny' : 'weather-night'}
             size={themeUtils.WP(8)}
-            color={theme === 'dark' ? '#d1b32e' : '#fff'}
+            color={theme === 'dark' ? '#d1b32e' : palette.text.primary}
           />
         </TouchableOpacity>
         {showChat.chat && (

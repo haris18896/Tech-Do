@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  StatusBar,
-} from 'react-native';
+import { StatusBar, View } from 'react-native';
+
+// ** Third Party Packages
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
-import { theme as themeUtils } from '../../@core/infrustructure/theme';
-import { dailyTasks, getTaskCounts, Task } from '../../utils/constants';
-import { BarHeader } from '../../@core/components';
-import { Layout } from '../../@core/layout';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// ** Utils
+import { theme as themeUtils } from '../../@core/infrustructure/theme';
+import { dailyTasks, getTaskCounts, Task } from '../../utils/constants';
+
+// ** Custom Components
+import { BarHeader } from '../../@core/components';
+import { Layout } from '../../@core/layout';
+
+
 // Import our custom components
+import {
+  TaskCount,
+  TasksList,
+  SectionTitle,
+  SectionHeader,
+  EmptyStateTitle,
+  EmptyStateSubtitle,
+  EmptyStateContainer,
+  FloatingActionButton,
+} from '../../styles/screens/Dashboard';
 import TaskCard from '../../components/TaskCard';
 import ProgressSummary from '../../components/ProgressSummary';
 
@@ -56,19 +66,19 @@ const Dashboard: React.FC = () => {
 
   // Render empty state when no tasks are available
   const renderEmptyState = () => (
-    <View style={styles.emptyStateContainer}>
+    <EmptyStateContainer>
       <Icon
         name="checkbox-blank-circle-outline"
         size={themeUtils.WP(20)}
         color={palette.grey[300]}
       />
-      <Text style={[styles.emptyStateTitle, { color: palette.text.title }]}>
+      <EmptyStateTitle>
         No Tasks Yet
-      </Text>
-      <Text style={[styles.emptyStateSubtitle, { color: palette.text.body }]}>
+      </EmptyStateTitle>
+      <EmptyStateSubtitle>
         Tap the + button to add your first task
-      </Text>
-    </View>
+      </EmptyStateSubtitle>
+    </EmptyStateContainer>
   );
 
   return (
@@ -84,7 +94,8 @@ const Dashboard: React.FC = () => {
         onPressBar={() => navigation.dispatch(DrawerActions.openDrawer())}
       />
 
-      {/* Progress Summary Section */}
+      <View style={{marginTop: themeUtils?.WP(4)}}>
+
       <ProgressSummary
         dailyTotal={counts.daily.total}
         dailyCompleted={counts.daily.completed}
@@ -92,22 +103,22 @@ const Dashboard: React.FC = () => {
         weeklyCompleted={counts.weekly.completed}
         monthlyTotal={counts.monthly.total}
         monthlyCompleted={counts.monthly.completed}
-      />
+        />
+        </View>
 
-      {/* Daily Tasks Section */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: palette.text.title }]}>
+      <SectionHeader>
+        <SectionTitle>
           Daily Tasks
-        </Text>
-        <Text style={[styles.taskCount, { color: palette.text.body }]}>
+        </SectionTitle>
+        <TaskCount>
           {counts.daily.completed}/{counts.daily.total} completed
-        </Text>
-      </View>
+        </TaskCount>
+      </SectionHeader>
 
       {/* Tasks List */}
-      <FlatList
+      <TasksList<Task>
         data={tasks}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Task }) => (
           <TaskCard
             id={item.id}
             title={item.title}
@@ -116,77 +127,17 @@ const Dashboard: React.FC = () => {
             onToggleComplete={handleToggleComplete}
           />
         )}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
+        keyExtractor={(item: Task) => item.id}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
       />
 
       {/* Floating Action Button for adding new tasks */}
-      <TouchableOpacity
-        style={[styles.fab, { backgroundColor: palette.primary.main }]}
-        onPress={navigateToNewTask}
-      >
+      <FloatingActionButton onPress={navigateToNewTask}>
         <Icon name="plus" size={themeUtils.WP(8)} color={palette.common.white} />
-      </TouchableOpacity>
+      </FloatingActionButton>
     </Layout>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: themeUtils.WP(4),
-    marginBottom: themeUtils.WP(2),
-  },
-  sectionTitle: {
-    fontSize: themeUtils.WP(5),
-    fontWeight: 'bold',
-  },
-  taskCount: {
-    fontSize: themeUtils.WP(3.5),
-  },
-  listContainer: {
-    paddingBottom: themeUtils.WP(20), // Extra padding at the bottom for FAB
-    flexGrow: 1,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: themeUtils.WP(6),
-    right: themeUtils.WP(6),
-    width: themeUtils.WP(14),
-    height: themeUtils.WP(14),
-    borderRadius: themeUtils.WP(7),
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-  },
-  emptyStateContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: themeUtils.WP(20),
-  },
-  emptyStateTitle: {
-    fontSize: themeUtils.WP(5),
-    fontWeight: 'bold',
-    marginTop: themeUtils.WP(4),
-    marginBottom: themeUtils.WP(2),
-  },
-  emptyStateSubtitle: {
-    fontSize: themeUtils.WP(3.5),
-    textAlign: 'center',
-    paddingHorizontal: themeUtils.WP(10),
-  },
-});
 
 export default Dashboard;

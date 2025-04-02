@@ -1,7 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+
+// ** Utils
 import { useAppTheme } from '../@core/infrustructure/theme/useAppTheme';
-import { theme as themeUtils } from '../@core/infrustructure/theme';
+
+// ** Components
+import {
+  Container,
+  ProgressTitle,
+  ProgressCircle,
+  ProgressSubtitle,
+  ProgressPercentage,
+  OverallProgressLeft,
+  OverallProgressCard,
+  CategoryCardsContainer,
+  ProgressCircleContainer,
+} from '../styles/components/ProgressSummary';
 import ProgressCard from './ProgressCard';
 
 interface ProgressSummaryProps {
@@ -29,37 +42,30 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
   const overallPercentage = totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0;
 
   return (
-    <View style={styles.container}>
-      {/* Main Progress Card */}
-      <View
-        style={[
-          styles.overallProgressCard,
-          { backgroundColor: palette.primary.main },
-        ]}
-      >
-        <View style={styles.overallProgressLeft}>
-          <Text style={[styles.progressTitle, { color: palette.common.white }]}>
+    <Container>
+      <OverallProgressCard>
+        <OverallProgressLeft>
+          <ProgressTitle>
             Overall Progress
-          </Text>
-          <Text style={[styles.progressSubtitle, { color: palette.common.white }]}>
+          </ProgressTitle>
+          <ProgressSubtitle>
             {totalCompleted} of {totalTasks} tasks completed
-          </Text>
-        </View>
+          </ProgressSubtitle>
+        </OverallProgressLeft>
 
-        <View style={styles.progressCircleContainer}>
-          <View style={styles.progressCircle}>
-            <Text style={[styles.progressPercentage, { color: palette.primary.main }]}>
+        <ProgressCircleContainer>
+          <ProgressCircle>
+            <ProgressPercentage>
               {overallPercentage}%
-            </Text>
-          </View>
-        </View>
-      </View>
+            </ProgressPercentage>
+          </ProgressCircle>
+        </ProgressCircleContainer>
+      </OverallProgressCard>
 
       {/* Category Progress Cards */}
-      <ScrollView
+      <CategoryCardsContainer
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryCardsContainer}
       >
         <ProgressCard
           title="Daily Tasks"
@@ -84,64 +90,9 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
           icon="calendar-month"
           accentColor={palette.info.main}
         />
-      </ScrollView>
-    </View>
+      </CategoryCardsContainer>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: themeUtils.WP(4),
-  },
-  overallProgressCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: themeUtils.WP(4),
-    marginBottom: themeUtils.WP(4),
-    padding: themeUtils.WP(4),
-    borderRadius: 16,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-  },
-  overallProgressLeft: {
-    flex: 1,
-  },
-  progressTitle: {
-    fontSize: themeUtils.WP(5),
-    fontWeight: 'bold',
-    marginBottom: themeUtils.WP(1),
-  },
-  progressSubtitle: {
-    fontSize: themeUtils.WP(3.5),
-    opacity: 0.9,
-  },
-  progressCircleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  progressCircle: {
-    width: themeUtils.WP(16),
-    height: themeUtils.WP(16),
-    borderRadius: themeUtils.WP(8),
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  progressPercentage: {
-    fontSize: themeUtils.WP(5),
-    fontWeight: 'bold',
-  },
-  categoryCardsContainer: {
-    paddingLeft: themeUtils.WP(4),
-    paddingRight: themeUtils.WP(8),
-  },
-});
 
 export default ProgressSummary;
