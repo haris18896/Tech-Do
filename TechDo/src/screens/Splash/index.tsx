@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ActivityIndicator,
   View,
@@ -18,8 +18,8 @@ import {PageCenter, TextItem} from '../../styles/infrustucture';
 import {appImages} from '../../assets';
 
 // ** Third Party
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useNavigation, CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 // ** Types
 interface Palette {
@@ -58,29 +58,29 @@ const getBottomLeftCornerStyle = (palette: Palette): ViewStyle => ({
 
 const Splash: React.FC = () => {
   // ** Navigation
-  //   const navigation = useNavigation();
+    const navigation = useNavigation();
 
   // ** Theme
   const {palette} = useAppTheme();
 
-  //   useEffect(() => {
-  //     const timer = setTimeout(async () => {
-  //       try {
-  //         const isLoggedIn = await AsyncStorage.getItem('token');
-  //         const initialRouteName = isLoggedIn ? 'App' : 'Auth';
-  //         navigation.dispatch(
-  //           CommonActions.reset({
-  //             index: 0,
-  //             routes: [{ name: initialRouteName }],
-  //           })
-  //         );
-  //       } catch (error) {
-  //         console.error('Error retrieving token:', error);
-  //       }
-  //     }, 3000);
+    useEffect(() => {
+      const timer = setTimeout(async () => {
+        try {
+          const isLoggedIn = await AsyncStorage.getItem('token');
+          const initialRouteName = isLoggedIn ? 'App' : 'Auth';
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: initialRouteName }],
+            })
+          );
+        } catch (error) {
+          console.error('Error retrieving token:', error);
+        }
+      }, 3000);
 
-  //     return () => clearTimeout(timer);
-  //   }, [navigation]);
+      return () => clearTimeout(timer);
+    }, [navigation]);
 
   return (
     <View
