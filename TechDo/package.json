@@ -1,13 +1,19 @@
 {
   "name": "TechDo",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "pregit": "git status",
+    "git": "git add . && git commit -m",
+    "postgit": "git push",
+    "i-16": "react-native run-ios --simulator='iPhone 16 Pro Max'",
+    "iPad": "react-native run-ios --simulator='iPad Pro (12.9-inch) (6th generation)'",
+    "run-all": "yarn i-16 && yarn android"
   },
   "dependencies": {
     "react": "19.0.0",
