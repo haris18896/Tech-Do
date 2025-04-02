@@ -33,13 +33,13 @@ import {ButtonAction} from '../../components';
 import {CheckBox, TextInput} from '../../@core/components';
 import {ColumnStart, RowCenter, TextItem} from '../../styles/infrustucture';
 
-
 // ** Assets
 import {appImages} from '../../assets';
 
 type AuthStackParamList = {
   Login: undefined;
   Registration: undefined;
+  App: undefined;
 };
 
 const Login = () => {
@@ -47,7 +47,7 @@ const Login = () => {
   const email_ref = useRef<typeof TextInput>(null);
   const password_ref = useRef<typeof TextInput>(null);
 
-  // ** Theme
+  // ** Theme && Navigation
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -193,8 +193,7 @@ const Login = () => {
               />
 
               <AuthActivityWrapper mt={2} mb={8}>
-
-              <CheckBox
+                <CheckBox
                   disabled={false}
                   // @ts-ignore
                   state={rememberMe}
@@ -210,25 +209,25 @@ const Login = () => {
               </AuthActivityWrapper>
 
               <UserActivityWrapper
-                  direction={'column'}
-                  alignItems={'flex-end'}
-                  justifyContent={'flex-end'}>
-                  <ButtonAction
-                    end={true}
-                    title={'Login'}
-                    titleWeight={'bold'}
-                    border={'transparent'}
-                    loading={isLoading === 'login_pending'}
-                    onPress={() => formik.handleSubmit()}
-                    color={palette?.primary?.main}
-                    labelColor={palette?.common?.white}
-                    loadingColor={palette?.common?.white}
-                    disabled={!isObjEmpty(formik.errors)}
-                  />
-                </UserActivityWrapper>
+                direction={'column'}
+                alignItems={'flex-end'}
+                justifyContent={'flex-end'}>
+                <ButtonAction
+                  end={true}
+                  title={'Login'}
+                  titleWeight={'bold'}
+                  border={'transparent'}
+                  loading={isLoading === 'login_pending'}
+                  // onPress={() => formik.handleSubmit()}
+                  onPress={() => navigation.navigate('App')}
+                  color={palette?.primary?.main}
+                  labelColor={palette?.common?.white}
+                  loadingColor={palette?.common?.white}
+                  disabled={!isObjEmpty(formik.errors)}
+                />
+              </UserActivityWrapper>
 
-                  <RowCenter style={{marginTop: themeUtils?.WP(4)}}>
-
+              <RowCenter style={{marginTop: themeUtils?.WP(4)}}>
                 <Pressable
                   disabled={false}
                   onPress={() => navigation.navigate('Registration')}>
@@ -236,14 +235,13 @@ const Login = () => {
                     Don't have an account? Sign up
                   </TextItem>
                 </Pressable>
-                    </RowCenter>
+              </RowCenter>
             </AuthContainer>
-
           </View>
 
           <RowCenter style={styles.LoginFooter}>
             <TextItem color={'white'}>
-              © {moment().format('YYYY')} WorkBox. All rights reserved.
+              © {moment().format('YYYY')} Tech Do. All rights reserved.
             </TextItem>
           </RowCenter>
         </KeyboardAvoidingView>
