@@ -16,6 +16,7 @@
     "run-all": "yarn i-16 && yarn android"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.4",
     "@react-navigation/drawer": "^7.3.3",
     "@react-navigation/material-top-tabs": "^7.2.4",
@@ -33,6 +34,7 @@
     "react-native-safe-area-context": "^5.3.0",
     "react-native-screens": "^4.10.0",
     "react-native-svg": "^15.11.2",
+    "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
