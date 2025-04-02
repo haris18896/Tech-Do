@@ -16,21 +16,26 @@ import moment from 'moment';
 import {useFormik} from 'formik';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ** Utils
+import {isObjEmpty} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
-import {ColumnStart, RowCenter, TextItem} from '../../styles/infrustucture';
-import {appImages} from '../../assets';
+
+// ** Custom Components
 import {
-  AuthActivityWrapper,
   AuthContainer,
+  AuthActivityWrapper,
   UserActivityWrapper,
 } from '../../styles/screens/Auth';
-import {CheckBox, TextInput} from '../../@core/components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {isObjEmpty} from '../../utils/utils';
 import {ButtonAction} from '../../components';
+import {CheckBox, TextInput} from '../../@core/components';
+import {ColumnStart, RowCenter, TextItem} from '../../styles/infrustucture';
+
+
+// ** Assets
+import {appImages} from '../../assets';
 
 type AuthStackParamList = {
   Login: undefined;
