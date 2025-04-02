@@ -3,7 +3,6 @@ import 'react-native-gesture-handler';
 import React, {FC} from 'react';
 
 // ** Utils
-import {theme} from './@core/infrustructure/theme';
 
 // ** Third Party Packages
 import Toast from 'react-native-toast-message';
