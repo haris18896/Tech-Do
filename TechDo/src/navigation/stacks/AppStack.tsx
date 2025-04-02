@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native-stack';
 
 // ** Screens
-import { MyDrawer } from '../drawer/DrawerNavigation';
+import {MyDrawer} from '../drawer/DrawerNavigation';
 
 // Define the param list for this stack
 export type AppStackParamList = {

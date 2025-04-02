@@ -3,9 +3,9 @@ import {
   View,
   Platform,
   StyleSheet,
+  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView,
 } from 'react-native';
 
 // ** Third Party Packages
@@ -95,6 +95,7 @@ const Profile: React.FC = () => {
     <View
       style={[styles.MainContainer, {backgroundColor: palette.primary.main}]}>
       <BarHeader
+        showChat={{badge: false, chat: false}}
         showNotification={{notification: false, badge: false}}
         // @ts-ignore
         onPressBar={() => navigation.openDrawer()}

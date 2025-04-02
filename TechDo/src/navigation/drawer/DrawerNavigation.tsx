@@ -6,8 +6,8 @@ import {
 } from '@react-navigation/drawer';
 
 // ** Utils
-import { theme as AppTheme } from '../../@core/infrustructure/theme';
-import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
+import {theme as AppTheme} from '../../@core/infrustructure/theme';
+import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
 
 // ** Custom Components
 import SideMenu from './sideMenu';
@@ -32,13 +32,15 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export function MyDrawer(): React.ReactElement {
   // ** Theme
-  const { palette } = useAppTheme();
+  const {palette} = useAppTheme();
 
   return (
     <Drawer.Navigator
       backBehavior={'history'}
       initialRouteName={'Dashboard'}
-      drawerContent={(props: DrawerContentComponentProps) => <SideMenu {...props} />}
+      drawerContent={(props: DrawerContentComponentProps) => (
+        <SideMenu {...props} />
+      )}
       screenOptions={{
         headerShown: false,
         drawerStyle: {

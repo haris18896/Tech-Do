@@ -31,7 +31,7 @@ import {
   DrawerAvatarContainer,
 } from '../../styles/components';
 import {TextItem} from '../../styles/infrustucture';
-import { ProfileImageWrapper } from '../../styles/screens/Profile';
+import {ProfileImageWrapper} from '../../styles/screens/Profile';
 
 // ** SVGs
 import {LogoutIcon, appImages} from '../../assets';
@@ -56,7 +56,6 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
-
   // ** Theme
   const {palette} = useAppTheme();
 
@@ -143,19 +142,16 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
         <DrawerAvatarContainer>
           <ProfileImageWrapper size={{width: 12, height: 12}}>
             <AvatarWrapper size={12}>
-              <Avatar
-                source={ appImages?.logo
-                }
-              />
+              <Avatar source={appImages?.logo} />
             </AvatarWrapper>
           </ProfileImageWrapper>
 
           <UserDetailWrapper>
             <TextItem weight={'semiBold'} size={4} color={palette.text.title}>
-Haris Ahmad
+              Haris Ahmad
             </TextItem>
             <TextItem weight={'semiBold'} size={3.5} color={palette.text.body}>
-haris18896@gmail.com
+              haris18896@gmail.com
             </TextItem>
           </UserDetailWrapper>
         </DrawerAvatarContainer>
