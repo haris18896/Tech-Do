@@ -38,7 +38,9 @@ export const BottomBarContainer = styled(View)<ThemeProps>`
   flex: 1;
 `;
 
-export const BottomBarIconHolder = styled(TouchableOpacity)<BottomBarIconHolderProps>`
+export const BottomBarIconHolder = styled(
+  TouchableOpacity,
+)<BottomBarIconHolderProps>`
   width: ${props => props?.theme?.WP(10)}px;
   height: ${props => props?.theme?.WP(10)}px;
   border-radius: ${props => props?.theme?.WP(14)}px;

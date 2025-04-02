@@ -4,9 +4,9 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 // Define a type for the theme
 interface Theme {
   WP: (value: number) => number;
-  DefaultPalette: () => { text: { primary: string }, background: { paper: string } };
-  fonts: { medium: string, semiBold: string };
-  fontWeights: { medium: string, semiBold: string };
+  DefaultPalette: () => {text: {primary: string}; background: {paper: string}};
+  fonts: {medium: string; semiBold: string};
+  fontWeights: {medium: string; semiBold: string};
 }
 
 interface HeaderContainerProps {
@@ -35,8 +35,8 @@ interface HeaderImageWrapperProps {
   bg?: string;
   marginTop?: number;
   marginBottom?: number;
-  size?: { width?: number; height?: number };
-  border?: { width?: number; color?: string };
+  size?: {width?: number; height?: number};
+  border?: {width?: number; color?: string};
   theme: Theme;
 }
 
@@ -124,9 +124,7 @@ export const HeaderImageWrapper = styled(View)<HeaderImageWrapperProps>`
   justify-content: center;
   background-color: ${props => (props.bg ? props.bg : 'transparent')};
   margin-top: ${props =>
-    props.marginTop
-      ? props.theme.WP(props.marginTop)
-      : props.theme.WP(7)}px;
+    props.marginTop ? props.theme.WP(props.marginTop) : props.theme.WP(7)}px;
   margin-bottom: ${props =>
     props.marginBottom
       ? props.theme.WP(props.marginBottom)

@@ -6,6 +6,7 @@ import React, {FC} from 'react';
 
 // ** Third Party Packages
 import Toast from 'react-native-toast-message';
+import {PaperProvider} from 'react-native-paper';
 
 // ** Custom Packages
 import MainStack from './navigation';
@@ -16,8 +17,10 @@ const App: FC = () => {
   return (
     <ThemeToggleProvider>
       <ThemeProvider>
-        <MainStack />
-        <Toast />
+        <PaperProvider>
+          <MainStack />
+          <Toast />
+        </PaperProvider>
       </ThemeProvider>
     </ThemeToggleProvider>
   );

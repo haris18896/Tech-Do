@@ -103,7 +103,9 @@ export const DrawerListWrapper = styled(ScrollView)<ThemeProps>`
   margin-top: ${props => props?.theme?.WP(4)}px;
 `;
 
-export const MenuItemComponent = styled(TouchableOpacity)<MenuItemComponentProps>`
+export const MenuItemComponent = styled(
+  TouchableOpacity,
+)<MenuItemComponentProps>`
   background-color: ${props =>
     props?.active
       ? props?.theme?.DefaultPalette()?.secondary?.light
@@ -128,8 +130,8 @@ export const MenuItemText = styled(Text)<MenuItemTextProps>`
     props?.fontWeight ? props?.fontWeight : props?.theme?.fontWeights?.medium};
   color: ${props =>
     props?.active
-      ? props.theme?.DefaultPalette()?.common?.white ?? '#fff'
-      : props.theme?.DefaultPalette()?.grey?.[600] ?? '#757575'};
+      ? (props.theme?.DefaultPalette()?.common?.white ?? '#fff')
+      : (props.theme?.DefaultPalette()?.grey?.[600] ?? '#757575')};
   font-size: ${props => props.theme?.WP(3.5) ?? 14}px;
   margin-left: ${props => props.theme?.WP(2) ?? 8}px;
 `;

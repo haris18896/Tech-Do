@@ -50,7 +50,9 @@ interface LoadingWrapperProps extends ThemeProps {
   right?: boolean;
 }
 
-export const BackButtonContainer = styled(TouchableOpacity)<BackButtonContainerProps>`
+export const BackButtonContainer = styled(
+  TouchableOpacity,
+)<BackButtonContainerProps>`
   background-color: ${props =>
     props?.bg ? props?.bg : props?.theme?.DefaultPalette()?.background?.paper};
   padding: ${props => props?.theme?.WP(2)}px;

@@ -10,11 +10,11 @@ interface Theme {
       errorColor: string;
       borderColor: string;
       disabledColor: string;
-    },
-    background: { inputBG: string }
+    };
+    background: {inputBG: string};
   };
-  fonts: { regular: string; bold: string; [key: string]: string };
-  fontWeights: { bold: string; [key: string]: string };
+  fonts: {regular: string; bold: string; [key: string]: string};
+  fontWeights: {bold: string; [key: string]: string};
 }
 
 // Define prop types for TextInputWrapper
@@ -71,7 +71,9 @@ export const InputLabel = styled(Text)<InputLabelProps>`
       : props.theme.fontWeights.bold};
   font-family: ${props =>
     props.labelStyles?.family
-      ? props.theme.fonts[props.labelStyles?.family as keyof typeof props.theme.fonts]
+      ? props.theme.fonts[
+          props.labelStyles?.family as keyof typeof props.theme.fonts
+        ]
       : props.theme.fonts.regular};
   margin-left: ${props => props.theme.WP('0.5')}px;
   color: ${props =>

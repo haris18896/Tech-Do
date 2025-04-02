@@ -81,8 +81,8 @@ interface TextInputProps {
   secureTextEntry?: boolean;
   iconColor?: string;
   imageIcon?: {
-    left?: { icon: any; width: number; height: number };
-    right?: { icon: any; width: number; height: number }
+    left?: {icon: any; width: number; height: number};
+    right?: {icon: any; width: number; height: number};
   };
   cursorColor?: string;
   selectionColor?: string;
@@ -90,7 +90,7 @@ interface TextInputProps {
 }
 
 const TextInput = forwardRef<any, TextInputProps>((props, ref) => {
-  const {palette} = useAppTheme() as unknown as { palette: Palette };
+  const {palette} = useAppTheme() as unknown as {palette: Palette};
   const {
     width,
     title,
@@ -130,7 +130,7 @@ const TextInput = forwardRef<any, TextInputProps>((props, ref) => {
 
   const [showPass, setShowPass] = useState(true);
   return (
-    <TextInputWrapper  width={width}>
+    <TextInputWrapper width={width}>
       {title && (
         <InputLabel labelStyles={styleData?.labelStyles || {}}>
           {title}
@@ -195,7 +195,11 @@ const TextInput = forwardRef<any, TextInputProps>((props, ref) => {
           onSubmitEditing={() => {
             if (nextInputRef && nextInputRef.current) {
               nextInputRef.current.focus();
-            } else if (returnKeyType === 'done' && ref && typeof ref !== 'function') {
+            } else if (
+              returnKeyType === 'done' &&
+              ref &&
+              typeof ref !== 'function'
+            ) {
               ref.current?.blur();
               submit?.();
             } else {
@@ -245,10 +249,7 @@ const TextInput = forwardRef<any, TextInputProps>((props, ref) => {
 
       {formikTouched && formikError && (
         <ErrorTextWrapper>
-          <ErrorText
-            style={styles.errorText}>
-            {formikError}
-          </ErrorText>
+          <ErrorText style={styles.errorText}>{formikError}</ErrorText>
         </ErrorTextWrapper>
       )}
     </TextInputWrapper>
