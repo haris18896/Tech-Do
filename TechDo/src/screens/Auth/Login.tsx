@@ -34,7 +34,7 @@ import {ButtonAction} from '../../components';
 
 type AuthStackParamList = {
   Login: undefined;
-  Register: undefined;
+  Registration: undefined;
 };
 
 const Login = () => {
@@ -102,6 +102,13 @@ const Login = () => {
             ]}>
             <RowCenter>
               <Image style={styles.logo} source={appImages?.logo} />
+              <TextItem
+                weight={'xBold'}
+                family={'semiBold'}
+                size={8}
+                color={palette?.secondary?.main}>
+                Tech Do
+              </TextItem>
             </RowCenter>
 
             <AuthContainer
@@ -195,13 +202,6 @@ const Login = () => {
                   }
                   uncheckedColor={palette?.grey[400]}
                 />
-                <Pressable
-                  disabled={false}
-                  onPress={() => navigation.navigate('Register')}>
-                  <TextItem color={palette?.secondary?.main}>
-                    Don't have an account?
-                  </TextItem>
-                </Pressable>
               </AuthActivityWrapper>
 
               <UserActivityWrapper
@@ -221,7 +221,19 @@ const Login = () => {
                     disabled={!isObjEmpty(formik.errors)}
                   />
                 </UserActivityWrapper>
+
+                  <RowCenter style={{marginTop: themeUtils?.WP(4)}}>
+
+                <Pressable
+                  disabled={false}
+                  onPress={() => navigation.navigate('Registration')}>
+                  <TextItem color={palette?.secondary?.main}>
+                    Don't have an account? Sign up
+                  </TextItem>
+                </Pressable>
+                    </RowCenter>
             </AuthContainer>
+
           </View>
 
           <RowCenter style={styles.LoginFooter}>
