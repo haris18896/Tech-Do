@@ -4,7 +4,6 @@ import { Modal, Animated } from 'react-native';
 // ** Third Party Packages
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '../@core/infrustructure/theme/useAppTheme';
-// @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils
@@ -93,6 +92,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
   const { palette } = useAppTheme();
+  // @ts-ignore
   const navigation = useNavigation();
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -114,8 +114,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   const handleEdit = () => {
-    // @ts-ignore
-    navigation.navigate('EditTask', { taskId: id });
+    // Navigate to task form with the taskId parameter for edit mode
+    console.log('Navigating to edit task with ID:', id);
+    navigation.navigate('TaskForm', { taskId: id });
   };
 
   const confirmDelete = () => {

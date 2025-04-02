@@ -32,6 +32,7 @@ import ProgressSummary from '../../components/ProgressSummary';
 
 const Dashboard: React.FC = () => {
   const { palette } = useAppTheme();
+
   const navigation = useNavigation();
   const [tasks, setTasks] = useState<Task[]>(dailyTasks);
 
@@ -58,10 +59,9 @@ const Dashboard: React.FC = () => {
     // For now, we're just updating the state
   };
 
-  // Navigate to add new task screen
+  // Navigate to task form screen for new task
   const navigateToNewTask = () => {
-    // @ts-ignore
-    navigation.navigate('NewTask');
+    navigation.navigate('TaskForm');
   };
 
   // Render empty state when no tasks are available
@@ -95,16 +95,15 @@ const Dashboard: React.FC = () => {
       />
 
       <View style={{marginTop: themeUtils?.WP(4)}}>
-
-      <ProgressSummary
-        dailyTotal={counts.daily.total}
-        dailyCompleted={counts.daily.completed}
-        weeklyTotal={counts.weekly.total}
-        weeklyCompleted={counts.weekly.completed}
-        monthlyTotal={counts.monthly.total}
-        monthlyCompleted={counts.monthly.completed}
+        <ProgressSummary
+          dailyTotal={counts.daily.total}
+          dailyCompleted={counts.daily.completed}
+          weeklyTotal={counts.weekly.total}
+          weeklyCompleted={counts.weekly.completed}
+          monthlyTotal={counts.monthly.total}
+          monthlyCompleted={counts.monthly.completed}
         />
-        </View>
+      </View>
 
       <SectionHeader>
         <SectionTitle>
@@ -132,7 +131,6 @@ const Dashboard: React.FC = () => {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Floating Action Button for adding new tasks */}
       <FloatingActionButton onPress={navigateToNewTask}>
         <Icon name="plus" size={themeUtils.WP(8)} color={palette.common.white} />
       </FloatingActionButton>

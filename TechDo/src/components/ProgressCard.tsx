@@ -1,7 +1,6 @@
 import React from 'react';
 
 // ** Third Party Packages
-// @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils

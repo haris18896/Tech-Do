@@ -107,7 +107,7 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
           size={themeUtils.WP(5)}
         />
       ),
-      list: ['Weekly', 'Monthly', 'Daily'],
+      list: ['Weekly', 'Monthly', 'Daily', 'NewTask', 'EditTask'],
     },
     {
       id: 3,

@@ -18,6 +18,7 @@ import Daily from '../../screens/Tasks/Daily';
 import Weekly from '../../screens/Tasks/Weekly';
 import Dashboard from '../../screens/Dashboard';
 import Monthly from '../../screens/Tasks/Monthly';
+import TaskForm from '../../screens/Tasks/TaskForm';
 
 // Define the param list for our drawer navigator
 type DrawerParamList = {
@@ -26,6 +27,7 @@ type DrawerParamList = {
   Monthly: undefined;
   Weekly: undefined;
   Daily: undefined;
+  TaskForm: { taskId?: string }; // Optional taskId for edit mode
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -54,6 +56,7 @@ export function MyDrawer(): React.ReactElement {
       <Drawer.Screen name="Monthly" component={Monthly} />
       <Drawer.Screen name="Weekly" component={Weekly} />
       <Drawer.Screen name="Daily" component={Daily} />
+      <Drawer.Screen name="TaskForm" component={TaskForm} />
     </Drawer.Navigator>
   );
 }

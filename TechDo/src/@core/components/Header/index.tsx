@@ -128,7 +128,7 @@ const BarHeader: React.FC<BarHeaderProps> = props => {
           <Icon
             name="chevron-left"
             size={themeUtils?.WP(8)}
-            color={palette?.grey[100]}
+            color={palette?.text?.primary}
           />
         </TouchableOpacity>
       )}

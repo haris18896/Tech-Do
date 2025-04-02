@@ -11,10 +11,9 @@ import {
 // ** Third Party Packages
 import * as Yup from 'yup';
 import {useFormik} from 'formik';
-import {useNavigation} from '@react-navigation/native';
+import {DrawerActions} from '@react-navigation/native';
 // @ts-ignore
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 // ** Utils
 import {isObjEmpty, showToast} from '../../utils/utils';
@@ -39,14 +38,6 @@ import {
 // ** SVGs
 import {appImages} from '../../assets';
 
-type AppStackParamList = {
-  Dashboard: undefined;
-  Profile: undefined;
-  Monthly: undefined;
-  Weekly: undefined;
-  Daily: undefined;
-};
-
 const Profile: React.FC = () => {
   // ** Refs
   const name_ref = useRef<typeof TextInput>(null);
@@ -56,8 +47,6 @@ const Profile: React.FC = () => {
   // ** Theme && Navigation
   const {palette} = useAppTheme();
   const {theme, toggleTheme} = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
   // ** States
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -98,7 +87,7 @@ const Profile: React.FC = () => {
         showChat={{badge: false, chat: false}}
         showNotification={{notification: false, badge: false}}
         // @ts-ignore
-        onPressBar={() => navigation.openDrawer()}
+        onPressBar={() => DrawerActions.openDrawer()}
       />
 
       <ProfileContainer>
