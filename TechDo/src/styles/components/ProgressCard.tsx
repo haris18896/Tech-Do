@@ -21,7 +21,7 @@ export const CardContainer = styled(View)<ThemeProps>`
   flex-direction: row;
   border-radius: 16px;
   padding: ${props => props.theme.WP(4)}px;
-  margin-horizontal: ${props => props.theme.WP(4)}px;
+  margin-right: ${props => props.theme.WP(3)}px;
   margin-vertical: ${props => props.theme.WP(2)}px;
   background-color: ${props => props.theme.DefaultPalette().background.card};
   elevation: 4;
