@@ -9,7 +9,8 @@ import {theme as AppTheme} from '../@core/infrustructure/theme';
 export const isTablet = AppTheme?.scrWidth > 500;
 
 // Type guard to check if an object is empty
-export const isObjEmpty = (obj: Record<string, any>): boolean => Object.keys(obj).length === 0;
+export const isObjEmpty = (obj: Record<string, any>): boolean =>
+  Object.keys(obj).length === 0;
 
 // Define toast options interface
 interface ToastOptions {

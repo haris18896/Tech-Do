@@ -1,13 +1,16 @@
 import {space, sizes} from './spacing';
-import {fonts, fontWeights, lineHeights, fontSizes, Fonts, FontWeights, FontSizes, LineHeights} from './fonts';
 import {
-  WP,
-  HP,
-  scrWidth,
-  scrHeight,
-  platformOrientedCode,
-} from './responsive';
-import DefaultPalette, { Palette } from './colors';
+  fonts,
+  fontWeights,
+  lineHeights,
+  fontSizes,
+  Fonts,
+  FontWeights,
+  FontSizes,
+  LineHeights,
+} from './fonts';
+import {WP, HP, scrWidth, scrHeight, platformOrientedCode} from './responsive';
+import DefaultPalette, {Palette} from './colors';
 
 export type RF = (size: number) => number;
 

@@ -1,9 +1,15 @@
-import React, {createContext, useContext, useState, useEffect, ReactNode} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import {useColorScheme} from 'react-native';
 
 // ** hooks
 import useJwt from '../../auth/useJwt';
-import { showToast } from '../../../utils/utils';
+import {showToast} from '../../../utils/utils';
 
 // ** Define Theme Type
 type ThemeType = 'dark' | 'light';
@@ -21,9 +27,13 @@ interface ThemeToggleProviderProps {
 }
 
 // Create a context for the theme
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined,
+);
 
-export const ThemeToggleProvider: React.FC<ThemeToggleProviderProps> = ({children}) => {
+export const ThemeToggleProvider: React.FC<ThemeToggleProviderProps> = ({
+  children,
+}) => {
   const deviceTheme = useColorScheme() as ThemeType;
   const [theme, setTheme] = useState<ThemeType>(deviceTheme || 'light');
 

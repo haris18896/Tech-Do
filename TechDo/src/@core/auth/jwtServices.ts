@@ -1,9 +1,8 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 
 // ** Utils
-import { showToast } from '../../utils/utils';
-import { navigateTo } from '../../navigation/utils';
-
+import {showToast} from '../../utils/utils';
+import {navigateTo} from '../../navigation/utils';
 
 // ** Third Party Packages
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,7 +19,9 @@ export default class JwtService {
     this.jwtConfig = {...this.jwtConfig, ...jwtOverrideConfig};
 
     axios.interceptors.request.use(
-      async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
+      async (
+        config: InternalAxiosRequestConfig,
+      ): Promise<InternalAxiosRequestConfig> => {
         const token = await AsyncStorage.getItem('token');
         if (config.headers) {
           config.headers.Connection = 'keep-alive';

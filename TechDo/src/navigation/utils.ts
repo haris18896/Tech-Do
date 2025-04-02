@@ -11,7 +11,9 @@ type RootParamList = ReactNavigation.RootParamList;
 
 let navigatorRef: NavigationContainerRef<RootParamList> | null = null;
 
-export function setTopLevelNavigator(ref: NavigationContainerRef<RootParamList> | null): void {
+export function setTopLevelNavigator(
+  ref: NavigationContainerRef<RootParamList> | null,
+): void {
   navigatorRef = ref;
 }
 
@@ -26,11 +28,12 @@ export function navigateTo(page: string): void {
   }
 }
 
-export const navigationRef = React.createRef<NavigationContainerRef<RootParamList>>();
+export const navigationRef =
+  React.createRef<NavigationContainerRef<RootParamList>>();
 
 export function navigate<RouteName extends keyof RootParamList>(
   name: RouteName,
-  params?: Partial<RootParamList[RouteName]>
+  params?: Partial<RootParamList[RouteName]>,
 ): void {
   if (navigationRef.current) {
     navigationRef.current.navigate(name as string, params);

@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { useTheme as useThemeContext } from '../context/ThemeContext';
-import DefaultPalette, { Palette } from './colors';
+import {useMemo} from 'react';
+import {useTheme as useThemeContext} from '../context/ThemeContext';
+import DefaultPalette, {Palette} from './colors';
 
 interface AppTheme {
   theme: 'dark' | 'light';
@@ -9,7 +9,7 @@ interface AppTheme {
 }
 
 export const useAppTheme = (): AppTheme => {
-  const { theme } = useThemeContext();
+  const {theme} = useThemeContext();
 
   const palette = useMemo<Palette>(() => DefaultPalette(theme), [theme]);
 
