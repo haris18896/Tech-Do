@@ -92,7 +92,7 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
     {
       id: 2,
       name: 'All Tasks',
-      screen: 'Weekly',
+      screen: 'TaskTabs',
       icon: (
         <Icon
           name={'briefcase-off'}
@@ -107,7 +107,7 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
           size={themeUtils.WP(5)}
         />
       ),
-      list: ['Weekly', 'Monthly', 'Daily', 'NewTask', 'EditTask'],
+      list: ['TaskTabs', 'Weekly', 'Monthly', 'Daily', 'TaskForm'],
     },
     {
       id: 3,

@@ -19,7 +19,7 @@ export const CardContainer = styled(Animated.View)<CompletedProps>`
   flex-direction: row;
   align-items: center;
   padding: ${props => props.theme.WP(4)}px;
-  margin-horizontal: ${props => props.theme.WP(4)}px;
+  margin-horizontal: ${props => props.theme.WP(2)}px;
   margin-vertical: ${props => props.theme.WP(2)}px;
   border-radius: 12px;
   border-left-width: 4px;

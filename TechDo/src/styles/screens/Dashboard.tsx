@@ -12,7 +12,7 @@ export const SectionHeader = styled(View)<ThemeProps>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-horizontal: ${props => props.theme.WP(4)}px;
+  padding-horizontal: ${props => props.theme.WP(1)}px;
   margin-bottom: ${props => props.theme.WP(2)}px;
 `;
 
