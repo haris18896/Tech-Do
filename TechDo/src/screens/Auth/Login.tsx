@@ -91,7 +91,7 @@ const Login = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <>
+      <View style={styles.keyboardAvoding}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardAvoding}>
@@ -242,7 +242,7 @@ const Login = () => {
             </TextItem>
           </RowCenter>
         </KeyboardAvoidingView>
-      </>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
