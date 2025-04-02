@@ -5,7 +5,8 @@ import {
 } from '@react-navigation/native-stack';
 
 // ** Screens
-import {Login, Registration} from '../../screens/Auth';
+import Login from '../../screens/Auth/Login';
+import Registration from '../../screens/Auth/Registration';
 
 // Define the param list for this stack
 export type AuthStackParamList = {

@@ -1,12 +1,43 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { TextItem } from '../../styles/infrustucture';
+import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
+import { Layout } from '../../@core/layout';
 
 const Login: React.FC = () => {
+  const { palette } = useAppTheme();
+
   return (
-    <View>
-      <Text>Login</Text>
-    </View>
+    <Layout>
+      <View style={styles.container}>
+        <TextItem
+          size={6}
+          color={palette.primary.main}
+          weight="bold"
+        >
+          Login Screen
+        </TextItem>
+        <TextItem
+          size={4}
+          color={palette.text.secondary}
+          style={styles.subtitle}
+        >
+          Welcome back! Please login to continue.
+        </TextItem>
+      </View>
+    </Layout>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  subtitle: {
+    marginTop: 10,
+  },
+});
 
 export default Login;
