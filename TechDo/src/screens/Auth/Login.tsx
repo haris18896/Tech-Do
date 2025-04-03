@@ -97,7 +97,7 @@ const Login = () => {
             await AsyncStorage.setItem('login_creds', JSON.stringify(values));
           }
         } catch (error) {
-          Alert.alert('Error', 'Failed to login. Please try again.');
+          Alert.alert('Invalid Credentials', 'Failed to login. Please try again.');
         } finally {
           setIsLoading('');
         }
