@@ -132,12 +132,3 @@ yarn format
 2. Implement your changes
 3. Format your code: `yarn format`
 4. Submit a pull request
-
-
-## App Screen Shots
-![Uploading Screenshot 2025-04-03 at 9.55.34 PM.png…]()
-![Uploading Screenshot 2025-04-03 at 9.55.55 PM.png…]()
-![Uploading Screenshot 2025-04-03 at 9.56.29 PM.png…]()
-![Uploading Screenshot 2025-04-03 at 9.56.18 PM.png…]()
-![Uploading Screenshot 2025-04-03 at 9.56.53 PM.png…]()
-![Uploading Screenshot 2025-04-03 at 9.56.39 PM.png…]()
