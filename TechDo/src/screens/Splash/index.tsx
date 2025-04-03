@@ -67,7 +67,9 @@ const Splash: React.FC = () => {
   const {user, loading} = useAuth();
 
   useEffect(() => {
-    if (loading) {return;}
+    if (loading) {
+      return;
+    }
 
     const checkAuthState = async () => {
       try {

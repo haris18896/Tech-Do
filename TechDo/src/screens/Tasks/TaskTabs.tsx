@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StatusBar, View } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
+import React, {useState, useEffect, useRef} from 'react';
+import {StatusBar, View} from 'react-native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useNavigation, DrawerActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Custom Components
-import { BarHeader } from '../../@core/components';
-import { Layout } from '../../@core/layout';
-import { SafeArea } from '../../styles/infrustucture';
+import {BarHeader} from '../../@core/components';
+import {Layout} from '../../@core/layout';
+import {SafeArea} from '../../styles/infrustucture';
 
 // ** Task Screens
 import Daily from './Daily';
@@ -15,15 +15,15 @@ import Weekly from './Weekly';
 import Monthly from './Monthly';
 
 // ** Theme and Utils
-import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
-import { theme as themeUtils } from '../../@core/infrustructure/theme';
-import { useAuth } from '../../@core/infrustructure/context/AuthContext';
-import { Task } from '../../utils/constants';
-import { subscribeToTasks } from '../../@core/auth/TaskService';
-import { renderLoadingSpinner } from '../../utils/utils';
+import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import {theme as themeUtils} from '../../@core/infrustructure/theme';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
+import {Task} from '../../utils/constants';
+import {subscribeToTasks} from '../../@core/auth/TaskService';
+import {renderLoadingSpinner} from '../../utils/utils';
 
 // ** Styled Components
-import { FloatingActionButton } from '../../styles/screens/Dashboard';
+import {FloatingActionButton} from '../../styles/screens/Dashboard';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -43,9 +43,9 @@ export const TaskContext = React.createContext<{
 });
 
 const TaskTabs: React.FC = () => {
-  const { palette } = useAppTheme();
+  const {palette} = useAppTheme();
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const {user} = useAuth();
   const isMounted = useRef(true);
 
   // Tasks state
@@ -53,33 +53,37 @@ const TaskTabs: React.FC = () => {
   const [weeklyTasks, setWeeklyTasks] = useState<Task[]>([]);
   const [monthlyTasks, setMonthlyTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // Refs to store unsubscribe functions
   const unsubscribersRef = useRef<(() => void)[]>([]);
 
   useEffect(() => {
-    if (!user) {return;}
+    if (!user) {
+      return;
+    }
 
     setIsLoading(true);
-    const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', (tasks) => {
+    const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', tasks => {
       if (isMounted.current) {
         setDailyTasks(tasks);
       }
     });
 
-    const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', (tasks) => {
+    const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', tasks => {
       if (isMounted.current) {
         setWeeklyTasks(tasks);
       }
     });
 
-    const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', (tasks) => {
+    const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', tasks => {
       if (isMounted.current) {
         setMonthlyTasks(tasks);
       }
     });
 
-    unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+    unsubscribersRef.current = [
+      dailyUnsubscribe,
+      weeklyUnsubscribe,
+      monthlyUnsubscribe,
+    ];
     setIsLoading(false);
     return () => {
       isMounted.current = false;
@@ -90,7 +94,6 @@ const TaskTabs: React.FC = () => {
   const refreshTasks = async () => {
     console.log('Refreshing tasks...');
 
-    // Always clean up existing subscriptions first
     if (unsubscribersRef.current.length > 0) {
       console.log('Cleaning up existing subscriptions');
       unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
@@ -101,11 +104,8 @@ const TaskTabs: React.FC = () => {
       console.log('Setting up new task subscriptions');
       setIsLoading(true);
 
-      // Set up new listeners
-      return new Promise<void>((resolve) => {
-        let pendingSubscriptions = 3; // Three task types
-
-        // Helper to track when all subscriptions are complete
+      return new Promise<void>(resolve => {
+        let pendingSubscriptions = 3;
         const subscriptionComplete = () => {
           pendingSubscriptions--;
           if (pendingSubscriptions <= 0) {
@@ -120,19 +120,31 @@ const TaskTabs: React.FC = () => {
           subscriptionComplete();
         });
 
-        const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', tasks => {
-          console.log(`Received ${tasks.length} weekly tasks`);
-          setWeeklyTasks(tasks);
-          subscriptionComplete();
-        });
+        const weeklyUnsubscribe = subscribeToTasks(
+          user.uid,
+          'weekly',
+          tasks => {
+            console.log(`Received ${tasks.length} weekly tasks`);
+            setWeeklyTasks(tasks);
+            subscriptionComplete();
+          },
+        );
 
-        const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', tasks => {
-          console.log(`Received ${tasks.length} monthly tasks`);
-          setMonthlyTasks(tasks);
-          subscriptionComplete();
-        });
+        const monthlyUnsubscribe = subscribeToTasks(
+          user.uid,
+          'monthly',
+          tasks => {
+            console.log(`Received ${tasks.length} monthly tasks`);
+            setMonthlyTasks(tasks);
+            subscriptionComplete();
+          },
+        );
 
-        unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+        unsubscribersRef.current = [
+          dailyUnsubscribe,
+          weeklyUnsubscribe,
+          monthlyUnsubscribe,
+        ];
       });
     } else {
       console.log('No user available for refreshing tasks');
@@ -144,7 +156,12 @@ const TaskTabs: React.FC = () => {
     navigation.navigate('TaskForm');
   };
 
-  if (isLoading && !dailyTasks.length && !weeklyTasks.length && !monthlyTasks.length) {
+  if (
+    isLoading &&
+    !dailyTasks.length &&
+    !weeklyTasks.length &&
+    !monthlyTasks.length
+  ) {
     return (
       <Layout>
         <StatusBar
@@ -152,8 +169,8 @@ const TaskTabs: React.FC = () => {
           barStyle="light-content"
         />
         <BarHeader
-          showChat={{ badge: false, chat: false }}
-          showNotification={{ notification: false, badge: false }}
+          showChat={{badge: false, chat: false}}
+          showNotification={{notification: false, badge: false}}
           onPressBar={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
         {renderLoadingSpinner(palette)}
@@ -170,19 +187,20 @@ const TaskTabs: React.FC = () => {
         />
 
         <BarHeader
-          showChat={{ badge: false, chat: false }}
-          showNotification={{ notification: false, badge: false }}
+          showChat={{badge: false, chat: false}}
+          showNotification={{notification: false, badge: false}}
           onPressBar={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
 
-        <TaskContext.Provider value={{
-          dailyTasks,
-          weeklyTasks,
-          monthlyTasks,
-          refreshTasks,
-          isLoading,
-        }}>
-          <View style={{ flex: 1 }}>
+        <TaskContext.Provider
+          value={{
+            dailyTasks,
+            weeklyTasks,
+            monthlyTasks,
+            refreshTasks,
+            isLoading,
+          }}>
+          <View style={{flex: 1}}>
             <Tab.Navigator
               screenOptions={{
                 tabBarActiveTintColor: palette.secondary.main,
@@ -201,14 +219,17 @@ const TaskTabs: React.FC = () => {
                   fontSize: themeUtils.WP(3.5),
                   textTransform: 'none',
                 },
-              }}
-            >
+              }}>
               <Tab.Screen
                 name="Daily"
                 component={Daily}
                 options={{
                   tabBarIcon: ({color}) => (
-                    <Icon name="calendar-today" color={color} size={themeUtils.WP(5)} />
+                    <Icon
+                      name="calendar-today"
+                      color={color}
+                      size={themeUtils.WP(5)}
+                    />
                   ),
                 }}
               />
@@ -217,7 +238,11 @@ const TaskTabs: React.FC = () => {
                 component={Weekly}
                 options={{
                   tabBarIcon: ({color}) => (
-                    <Icon name="calendar-week" color={color} size={themeUtils.WP(5)} />
+                    <Icon
+                      name="calendar-week"
+                      color={color}
+                      size={themeUtils.WP(5)}
+                    />
                   ),
                 }}
               />
@@ -226,7 +251,11 @@ const TaskTabs: React.FC = () => {
                 component={Monthly}
                 options={{
                   tabBarIcon: ({color}) => (
-                    <Icon name="calendar-month" color={color} size={themeUtils.WP(5)} />
+                    <Icon
+                      name="calendar-month"
+                      color={color}
+                      size={themeUtils.WP(5)}
+                    />
                   ),
                 }}
               />
@@ -235,7 +264,11 @@ const TaskTabs: React.FC = () => {
         </TaskContext.Provider>
 
         <FloatingActionButton onPress={navigateToNewTask}>
-          <Icon name="plus" size={themeUtils.WP(8)} color={palette.common.white} />
+          <Icon
+            name="plus"
+            size={themeUtils.WP(8)}
+            color={palette.common.white}
+          />
         </FloatingActionButton>
       </SafeArea>
     </Layout>

@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import {JSX} from 'react';
 import {Platform, View, ActivityIndicator} from 'react-native';
 import {Task} from './constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -57,11 +57,15 @@ export const renderLoadingSpinner = (palette: Record<string, any>) => {
 export const renderEmptyState = (
   palette: Record<string, any>,
   title: string,
-  subtitle: string
+  subtitle: string,
 ) => {
   return (
     <EmptyStateContainer>
-      <Icon name="clipboard-text-outline" size={50} color={palette.text.secondary} />
+      <Icon
+        name="clipboard-text-outline"
+        size={50}
+        color={palette.text.secondary}
+      />
       <EmptyStateTitle>{title}</EmptyStateTitle>
       <EmptyStateSubtitle>{subtitle}</EmptyStateSubtitle>
     </EmptyStateContainer>
@@ -81,26 +85,28 @@ export const handleToggleComplete = async (
   completed: boolean,
   tasks: Task[],
   setTasks: (tasks: Task[]) => void,
-  refreshCallback?: () => void
+  refreshCallback?: () => void,
 ): Promise<void> => {
   try {
     // Optimistically update UI first for better user experience
     const updatedTasks = tasks.map(task =>
-      task.id === id ? { ...task, completed, updatedAt: new Date().getTime() } : task
+      task.id === id
+        ? {...task, completed, updatedAt: new Date().getTime()}
+        : task,
     );
     setTasks(updatedTasks);
-    
+
     // Then update in Firestore (won't need to refresh with real-time listeners)
     await toggleTaskComplete(id, completed);
   } catch (error) {
     console.error('Error toggling task completion:', error);
-    
+
     // Revert UI on error
     const originalTasks = tasks.map(task =>
-      task.id === id ? { ...task, completed: !completed } : task
+      task.id === id ? {...task, completed: !completed} : task,
     );
     setTasks(originalTasks);
-    
+
     // Show error toast
     showToast({
       type: 'error',
@@ -121,23 +127,23 @@ export const handleDeleteTask = async (
   id: string,
   tasks: Task[],
   setTasks: (tasks: Task[]) => void,
-  refreshCallback?: () => void
+  refreshCallback?: () => void,
 ): Promise<void> => {
   try {
     // Optimistically update UI first for better user experience
     const updatedTasks = tasks.filter(task => task.id !== id);
     setTasks(updatedTasks);
-    
+
     // Then delete from Firestore
     await deleteTask(id);
   } catch (error) {
     console.error('Error deleting task:', error);
-    
+
     // If error, revert the UI change and show error
     if (refreshCallback) {
       refreshCallback();
     }
-    
+
     // Show error toast
     showToast({
       type: 'error',
@@ -161,4 +167,3 @@ export const lightenColor = (hex: string, percent: number): string => {
   // Convert back to hex
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 };
-

@@ -17,13 +17,11 @@ interface Theme {
   fontWeights: {bold: string; [key: string]: string};
 }
 
-// Define prop types for TextInputWrapper
 interface TextInputWrapperProps {
   width?: string;
   theme: Theme;
 }
 
-// Define prop types for InputLabel
 interface InputLabelProps {
   labelStyles?: {
     weight?: string;
@@ -33,7 +31,6 @@ interface InputLabelProps {
   theme: Theme;
 }
 
-// Define prop types for InputContainer
 interface InputContainerProps {
   left?: boolean;
   right?: boolean;
@@ -44,7 +41,6 @@ interface InputContainerProps {
   theme: Theme;
 }
 
-// Define prop types for Input
 interface InputProps {
   editable?: boolean;
   formikTouched?: boolean;
@@ -55,6 +51,13 @@ interface InputProps {
   theme: Theme;
 }
 
+interface LeftIconWrapperProps {
+  theme: Theme;
+}
+
+interface RightIconWrapperProps {
+  theme: Theme;
+}
 export const TextInputWrapper = styled(View)<TextInputWrapperProps>`
   width: ${props => props.width || '100%'};
   position: relative;
@@ -137,16 +140,16 @@ export const Input = styled(TextInput)<InputProps>`
   height: ${props => props.theme.WP('10')}px;
 `;
 
-export const LeftIconWrapper = styled(View)`
+export const LeftIconWrapper = styled(View)<LeftIconWrapperProps>`
   position: absolute;
-  top: ${props => props.theme.WP('0.45')}px;
-  left: ${props => props.theme.WP('1.5')}px;
-  padding: ${props => props.theme.WP('2')}px;
+  top: ${props => props.theme.WP(0.45)}px;
+  left: ${props => props.theme.WP(1.5)}px;
+  padding: ${props => props.theme.WP(2)}px;
 `;
 
-export const RightIconWrapper = styled(View)`
+export const RightIconWrapper = styled(View)<RightIconWrapperProps>`
   position: absolute;
-  top: ${props => props.theme.WP('0.45')}px;
-  right: ${props => props.theme.WP('1.5')}px;
-  padding: ${props => props.theme.WP('2')}px;
+  top: ${props => props.theme.WP(0.45)}px;
+  right: ${props => props.theme.WP(1.5)}px;
+  padding: ${props => props.theme.WP(2)}px;
 `;

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Modal, Animated } from 'react-native';
+import {Modal, Animated} from 'react-native';
 
 // ** Third Party Packages
-import { useNavigation } from '@react-navigation/native';
-import { useAppTheme } from '../@core/infrustructure/theme/useAppTheme';
+import {useNavigation} from '@react-navigation/native';
+import {useAppTheme} from '../@core/infrustructure/theme/useAppTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils
-import { theme as themeUtils } from '../@core/infrustructure/theme';
+import {theme as themeUtils} from '../@core/infrustructure/theme';
 
 // ** Custom Components
 import {
@@ -60,12 +60,15 @@ const DeleteConfirmModal: React.FC<DeleteModalProps> = ({
       transparent
       visible={visible}
       animationType="fade"
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <ModalOverlay>
         <ModalContainer>
           <ModalHeader>
-            <Icon name="alert-circle-outline" size={themeUtils.WP(8)} color="#EA5455" />
+            <Icon
+              name="alert-circle-outline"
+              size={themeUtils.WP(8)}
+              color="#EA5455"
+            />
             <ModalTitle>Delete Task</ModalTitle>
           </ModalHeader>
 
@@ -128,7 +131,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   onToggleComplete,
 }) => {
   const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
-  const { palette } = useAppTheme();
+  const {palette} = useAppTheme();
   // @ts-ignore
   const navigation = useNavigation();
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
@@ -154,12 +157,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   const handleEdit = () => {
-    // Navigate to task form with the taskId parameter for edit mode
-    console.log('Navigating to edit task with ID:', id);
-    navigation.navigate('TaskForm', { taskId: id, category: category });
+    navigation.navigate('TaskForm', {taskId: id, category: category});
   };
-
-  console.log('Navigating to edit task with ID:', id);
 
   const confirmDelete = () => {
     setDeleteModalVisible(false);
@@ -169,10 +168,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <>
       <CardContainer
-        style={{ transform: [{ scale: scaleAnim }] }}
+        style={{transform: [{scale: scaleAnim}]}}
         completed={completed}
-        priority={priority}
-      >
+        priority={priority}>
         <CompletionCircle onPress={handlePress}>
           <CheckCircle completed={completed}>
             {completed && (
@@ -182,9 +180,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </CompletionCircle>
 
         <TaskContent>
-          <TaskTitle completed={completed}>
-            {title}
-          </TaskTitle>
+          <TaskTitle completed={completed}>{title}</TaskTitle>
 
           <TaskInfoRow>
             <TaskStatus completed={completed}>
@@ -192,19 +188,33 @@ const TaskCard: React.FC<TaskCardProps> = ({
             </TaskStatus>
 
             <PriorityBadge color={priorityInfo.color}>
-              <Icon name={priorityInfo.icon} size={themeUtils.WP(3)} color={priorityInfo.color} />
-              <PriorityText color={priorityInfo.color}>{priorityInfo.label}</PriorityText>
+              <Icon
+                name={priorityInfo.icon}
+                size={themeUtils.WP(3)}
+                color={priorityInfo.color}
+              />
+              <PriorityText color={priorityInfo.color}>
+                {priorityInfo.label}
+              </PriorityText>
             </PriorityBadge>
           </TaskInfoRow>
         </TaskContent>
 
         <ActionsContainer>
           <ActionButton onPress={handleEdit}>
-            <Icon name="pencil-outline" size={themeUtils.WP(5)} color={palette.secondary.main} />
+            <Icon
+              name="pencil-outline"
+              size={themeUtils.WP(5)}
+              color={palette.secondary.main}
+            />
           </ActionButton>
 
           <ActionButton onPress={() => setDeleteModalVisible(true)}>
-            <Icon name="delete-outline" size={themeUtils.WP(5)} color={palette.error.main} />
+            <Icon
+              name="delete-outline"
+              size={themeUtils.WP(5)}
+              color={palette.error.main}
+            />
           </ActionButton>
         </ActionsContainer>
       </CardContainer>

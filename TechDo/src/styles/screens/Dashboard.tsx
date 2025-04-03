@@ -1,10 +1,11 @@
 import styled from 'styled-components/native';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 
 interface ThemeProps {
   theme: {
     DefaultPalette: () => any;
     WP: (value: number) => number;
+    HP: (value: number) => number;
   };
 }
 
@@ -36,7 +37,7 @@ export const TasksList = styled(FlatList).attrs({
   flex-grow: 1;
 ` as any;
 
-export const ListContainer = styled.View`
+export const ListContainer = styled(View)<ThemeProps>`
   padding-bottom: ${props => props.theme.WP(20)}px;
   flex-grow: 1;
 `;

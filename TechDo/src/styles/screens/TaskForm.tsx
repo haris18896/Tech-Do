@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { theme as themeUtils } from '../../@core/infrustructure/theme';
+import {theme as themeUtils} from '../../@core/infrustructure/theme';
 
 export const Container = styled.View`
   padding-top: ${themeUtils.WP(5)}px;
@@ -62,18 +62,31 @@ export const OptionContainer = styled.View`
   margin-bottom: ${themeUtils.WP(5)}px;
 `;
 
-export const OptionButton = styled.TouchableOpacity<{ selected?: boolean; color?: string }>`
-  background-color: ${props => props.selected ? props.color || props.theme.DefaultPalette().primary.main : props.theme.DefaultPalette().background.paper};
+export const OptionButton = styled.TouchableOpacity<{
+  selected?: boolean;
+  color?: string;
+}>`
+  background-color: ${props =>
+    props.selected
+      ? props.color || props.theme.DefaultPalette().primary.main
+      : props.theme.DefaultPalette().background.paper};
   padding: ${themeUtils.WP(2)}px ${themeUtils.WP(4)}px;
   border-radius: ${themeUtils.WP(2)}px;
   margin-right: ${themeUtils.WP(2)}px;
-  border: 1px solid ${props => props.selected ? props.color || props.theme.DefaultPalette().primary.main : props.theme.DefaultPalette().divider};
+  border: 1px solid
+    ${props =>
+      props.selected
+        ? props.color || props.theme.DefaultPalette().primary.main
+        : props.theme.DefaultPalette().divider};
 `;
 
-export const OptionText = styled.Text<{ selected?: boolean }>`
+export const OptionText = styled.Text<{selected?: boolean}>`
   font-size: ${themeUtils.WP(3.5)}px;
-  color: ${props => props.selected ? props.theme.DefaultPalette().common.white : props.theme.DefaultPalette().text.primary};
-  font-weight: ${props => props.selected ? 'bold' : 'normal'};
+  color: ${props =>
+    props.selected
+      ? props.theme.DefaultPalette().common.white
+      : props.theme.DefaultPalette().text.primary};
+  font-weight: ${props => (props.selected ? 'bold' : 'normal')};
 `;
 
 export const ActionContainer = styled.View`
@@ -116,17 +129,23 @@ export const StatusBar = styled.View`
   margin-bottom: ${themeUtils.WP(4)}px;
 `;
 
-export const StatusIndicator = styled.View<{ completed: boolean }>`
+export const StatusIndicator = styled.View<{completed: boolean}>`
   width: ${themeUtils.WP(3)}px;
   height: ${themeUtils.WP(3)}px;
   border-radius: ${themeUtils.WP(1.5)}px;
-  background-color: ${props => props.completed ? props.theme.DefaultPalette().success.main : props.theme.DefaultPalette().warning.main};
+  background-color: ${props =>
+    props.completed
+      ? props.theme.DefaultPalette().success.main
+      : props.theme.DefaultPalette().warning.main};
   margin-right: ${themeUtils.WP(2)}px;
 `;
 
-export const StatusText = styled.Text<{ completed: boolean }>`
+export const StatusText = styled.Text<{completed: boolean}>`
   font-size: ${themeUtils.WP(3.5)}px;
-  color: ${props => props.completed ? props.theme.DefaultPalette().success.main : props.theme.DefaultPalette().warning.main};
+  color: ${props =>
+    props.completed
+      ? props.theme.DefaultPalette().success.main
+      : props.theme.DefaultPalette().warning.main};
   font-weight: 500;
 `;
 
@@ -166,20 +185,27 @@ export const CalendarRow = styled.View`
   margin-top: ${themeUtils.WP(3)}px;
 `;
 
-export const DayButton = styled.TouchableOpacity<{ selected?: boolean }>`
+export const DayButton = styled.TouchableOpacity<{selected?: boolean}>`
   width: ${themeUtils.WP(10)}px;
   height: ${themeUtils.WP(10)}px;
   justify-content: center;
   align-items: center;
   margin: ${themeUtils.WP(1)}px;
-  background-color: ${props => props.selected ? props.theme.DefaultPalette().primary.main : props.theme.DefaultPalette().background.default};
+  background-color: ${props =>
+    props.selected
+      ? props.theme.DefaultPalette().primary.main
+      : props.theme.DefaultPalette().background.default};
   border-radius: ${themeUtils.WP(5)}px;
 `;
 
-export const DayText = styled.Text<{ selected?: boolean; muted?: boolean }>`
+export const DayText = styled.Text<{selected?: boolean; muted?: boolean}>`
   color: ${props => {
-    if (props.selected) {return props.theme.DefaultPalette().common.white;}
-    if (props.muted) {return props.theme.DefaultPalette().text.disabled;}
+    if (props.selected) {
+      return props.theme.DefaultPalette().common.white;
+    }
+    if (props.muted) {
+      return props.theme.DefaultPalette().text.disabled;
+    }
     return props.theme.DefaultPalette().text.primary;
   }};
   font-size: ${themeUtils.WP(3.5)}px;

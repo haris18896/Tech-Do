@@ -138,7 +138,7 @@ export const monthlyTasks: Task[] = [
   {
     id: 'm2',
     title: 'Visit family',
-    description: 'Weekend trip to parents\' house',
+    description: "Weekend trip to parents' house",
     completed: true,
     createdAt: twoDaysAgo,
     updatedAt: yesterday,

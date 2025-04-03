@@ -1,12 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View } from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {View} from 'react-native';
 
 // ** Utils
-import { Task } from '../../utils/constants';
-import { theme as themeUtils } from '../../@core/infrustructure/theme';
-import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
-import { TaskContext } from './TaskTabs';
-import { handleToggleComplete, handleDeleteTask, renderEmptyState, renderLoadingSpinner } from '../../utils/utils';
+import {Task} from '../../utils/constants';
+import {theme as themeUtils} from '../../@core/infrustructure/theme';
+import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import {TaskContext} from './TaskTabs';
+import {
+  handleToggleComplete,
+  handleDeleteTask,
+  renderEmptyState,
+  renderLoadingSpinner,
+} from '../../utils/utils';
 
 // ** Custom Components
 import TaskCard from '../../components/TaskCard';
@@ -20,8 +25,8 @@ import {
 } from '../../styles/screens/Dashboard';
 
 const Daily: React.FC = () => {
-  const { palette } = useAppTheme();
-  const { dailyTasks, refreshTasks, isLoading } = useContext(TaskContext);
+  const {palette} = useAppTheme();
+  const {dailyTasks, refreshTasks, isLoading} = useContext(TaskContext);
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
@@ -38,11 +43,14 @@ const Daily: React.FC = () => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.background.paper, paddingTop: themeUtils.WP(4) }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: palette.background.paper,
+        paddingTop: themeUtils.WP(4),
+      }}>
       <SectionHeader>
-        <SectionTitle>
-          Daily Tasks
-        </SectionTitle>
+        <SectionTitle>Daily Tasks</SectionTitle>
         <TaskCount>
           {completedTasks}/{totalTasks} completed
         </TaskCount>
@@ -50,20 +58,27 @@ const Daily: React.FC = () => {
 
       <TasksList<Task>
         data={tasks}
-        renderItem={({ item }: { item: Task }) => (
+        renderItem={({item}: {item: Task}) => (
           <TaskCard
             id={item.id}
             title={item.title}
             category={item.category}
             completed={item.completed}
             priority={item.priority}
-            onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
+            onDelete={id => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
             onToggleComplete={(id, completed) =>
-              handleToggleComplete(id, completed, tasks, setTasks, refreshTasks)}
+              handleToggleComplete(id, completed, tasks, setTasks, refreshTasks)
+            }
           />
         )}
         keyExtractor={(item: Task) => item.id}
-        ListEmptyComponent={() => renderEmptyState(palette, 'No Daily Tasks Yet', 'Tap the + button to add a daily task')}
+        ListEmptyComponent={() =>
+          renderEmptyState(
+            palette,
+            'No Daily Tasks Yet',
+            'Tap the + button to add a daily task',
+          )
+        }
         showsVerticalScrollIndicator={false}
       />
     </View>

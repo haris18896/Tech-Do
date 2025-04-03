@@ -35,7 +35,7 @@ import {ProfileImageWrapper} from '../../styles/screens/Profile';
 
 // ** SVGs
 import {LogoutIcon, appImages} from '../../assets';
-import { useAuth } from '../../@core/infrustructure/context/AuthContext';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
 
 // ** Type definitions
 interface MenuItem {
@@ -60,7 +60,7 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
   // ** Theme
   const {palette} = useAppTheme();
 
-  const { user } = useAuth();
+  const {user} = useAuth();
 
   const onClose = (): void => {
     navigation.dispatch(DrawerActions.closeDrawer());

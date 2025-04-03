@@ -99,7 +99,7 @@ const Profile: React.FC = () => {
             try {
               await logout();
               // @ts-ignore
-              navigation.navigate('Auth', { screen: 'Login' });
+              navigation.navigate('Auth', {screen: 'Login'});
             } catch (error) {
               console.error('Logout error:', error);
             }
@@ -149,8 +149,7 @@ const Profile: React.FC = () => {
                 weight={'semiBold'}
                 family={'semiBold'}
                 size={4}
-                color={palette.grey[500]}
-              >
+                color={palette.grey[500]}>
                 {user?.email || 'No email provided'}
               </TextItem>
             </ColumCenter>
@@ -174,7 +173,9 @@ const Profile: React.FC = () => {
                     size={themeUtils.WP(5)}
                     color={palette.secondary?.main}
                   />
-                  <TextItem>{user?.phoneNumber || 'No phone number provided'}</TextItem>
+                  <TextItem>
+                    {user?.phoneNumber || 'No phone number provided'}
+                  </TextItem>
                 </RowStart>
 
                 <RowStart>

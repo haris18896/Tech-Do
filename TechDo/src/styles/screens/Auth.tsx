@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import {View, Text, ScrollView, KeyboardAvoidingView} from 'react-native';
 import {DefaultTheme} from 'styled-components';
 
-// Extend the DefaultTheme to include custom properties
 interface CustomTheme extends DefaultTheme {
   WP: (value: string | number) => number;
   scrHeight: number;
@@ -27,7 +26,6 @@ interface CustomTheme extends DefaultTheme {
   };
 }
 
-// Type definitions for styled-component props
 interface AvoidKeyboardProps {
   theme?: CustomTheme;
 }

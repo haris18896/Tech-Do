@@ -9,13 +9,11 @@ interface Theme {
   fontWeights: {medium: string};
 }
 
-// Define prop types for EmptyCenter
 interface EmptyCenterProps {
   maxWidth?: string;
   theme: Theme;
 }
 
-// Define prop types for EmptyText
 interface EmptyTextProps {
   fontSize?: number;
   theme: Theme;

@@ -17,6 +17,10 @@ interface ProfileImageWrapperProps {
   theme: Theme;
 }
 
+interface ThemeProps {
+  theme: Theme;
+}
+
 export const ProfileImageWrapper = styled(View)<ProfileImageWrapperProps>`
   position: relative;
   align-items: center;
@@ -38,13 +42,13 @@ export const ProfileImageWrapper = styled(View)<ProfileImageWrapperProps>`
     props.border?.color ? props.border.color : 'transparent'};
 `;
 
-export const ProfileImage = styled(Image)`
+export const ProfileImage = styled(Image)<ProfileImageWrapperProps>`
   width: 100%;
   height: 100%;
   border-radius: ${props => props.theme.WP(50)}px;
 `;
 
-export const UserProfileWrapper = styled(View)`
+export const UserProfileWrapper = styled(View)<ThemeProps>`
   width: 100%;
   flex-direction: column;
   align-items: center;
@@ -53,14 +57,14 @@ export const UserProfileWrapper = styled(View)`
   position: relative;
 `;
 
-export const ProfileHolder = styled(View)`
+export const ProfileHolder = styled(View)<ThemeProps>`
   flex: 0.3;
   background-color: ${props => props.theme.DefaultPalette().secondary.main};
   border-bottom-left-radius: ${props => props.theme.WP(10)}px;
   border-bottom-right-radius: ${props => props.theme.WP(10)}px;
 `;
 
-export const ProfileContainer = styled(View)`
+export const ProfileContainer = styled(View)<ThemeProps>`
   flex: 1;
   background-color: ${props =>
     props.theme.DefaultPalette().background.paperGrey};

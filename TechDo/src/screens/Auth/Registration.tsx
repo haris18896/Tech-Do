@@ -22,7 +22,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {isObjEmpty} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
-import { useAuth } from '../../@core/infrustructure/context/AuthContext';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {AuthContainer, UserActivityWrapper} from '../../styles/screens/Auth';
@@ -53,7 +53,7 @@ const Registration: React.FC = () => {
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { signUp } = useAuth();
+  const {signUp} = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<String>('');

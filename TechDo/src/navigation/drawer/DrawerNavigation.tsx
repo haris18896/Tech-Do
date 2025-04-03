@@ -29,7 +29,7 @@ type DrawerParamList = {
   Weekly: undefined;
   Daily: undefined;
   TaskTabs: undefined;
-  TaskForm: { taskId?: string }; // Optional taskId for edit mode
+  TaskForm: {taskId?: string}; // Optional taskId for edit mode
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();

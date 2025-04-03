@@ -43,7 +43,7 @@ export const ThemeToggleProvider: React.FC<ThemeToggleProviderProps> = ({
       } catch (err) {
         showToast({
           title: 'Load theme',
-          message: err,
+          message: String(err),
           type: 'error',
         });
       }
@@ -60,7 +60,7 @@ export const ThemeToggleProvider: React.FC<ThemeToggleProviderProps> = ({
     } catch (err) {
       showToast({
         title: 'Save theme',
-        message: err,
+        message: String(err),
         type: 'error',
       });
     }

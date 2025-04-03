@@ -91,7 +91,7 @@ export default class JwtService {
     let keys: readonly string[] = [];
     try {
       keys = await AsyncStorage.getAllKeys();
-      return [...keys]; // Convert readonly array to regular array
+      return [...keys];
     } catch (e) {
       showToast({
         title: 'Get all data',

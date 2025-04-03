@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import {View, Text, TouchableOpacity, Animated} from 'react-native';
 
 interface ThemeProps {
   theme: {
@@ -21,7 +21,9 @@ interface PriorityProps extends ThemeProps {
   color?: string;
 }
 
-export const CardContainer = styled(Animated.View)<CompletedProps & PriorityProps>`
+export const CardContainer = styled(Animated.View)<
+  CompletedProps & PriorityProps
+>`
   flex-direction: row;
   align-items: center;
   padding: ${props => props.theme.WP(4)}px;
@@ -31,9 +33,12 @@ export const CardContainer = styled(Animated.View)<CompletedProps & PriorityProp
   border-left-width: 4px;
   border-left-color: ${props => {
     if (props.completed) return props.theme.DefaultPalette().success.main;
-    if (props.priority === 'high') return props.theme.DefaultPalette().error.main;
-    if (props.priority === 'medium') return props.theme.DefaultPalette().warning.main;
-    if (props.priority === 'low') return props.theme.DefaultPalette().success.main;
+    if (props.priority === 'high')
+      return props.theme.DefaultPalette().error.main;
+    if (props.priority === 'medium')
+      return props.theme.DefaultPalette().warning.main;
+    if (props.priority === 'low')
+      return props.theme.DefaultPalette().success.main;
     return props.theme.DefaultPalette().primary.main;
   }};
   background-color: ${props => props.theme.DefaultPalette().background.card};
@@ -53,12 +58,14 @@ export const CheckCircle = styled(View)<CompletedProps>`
   height: ${props => props.theme.WP(6)}px;
   border-radius: ${props => props.theme.WP(3)}px;
   border-width: 2px;
-  border-color: ${props => props.completed ?
-    props.theme.DefaultPalette().success.main :
-    props.theme.DefaultPalette().grey[400]};
-  background-color: ${props => props.completed ?
-    props.theme.DefaultPalette().success.main :
-    'transparent'};
+  border-color: ${props =>
+    props.completed
+      ? props.theme.DefaultPalette().success.main
+      : props.theme.DefaultPalette().grey[400]};
+  background-color: ${props =>
+    props.completed
+      ? props.theme.DefaultPalette().success.main
+      : 'transparent'};
   justify-content: center;
   align-items: center;
 `;
@@ -73,8 +80,8 @@ export const TaskTitle = styled(Text)<CompletedProps>`
   font-weight: 600;
   margin-bottom: ${props => props.theme.WP(1)}px;
   color: ${props => props.theme.DefaultPalette().text.title};
-  text-decoration-line: ${props => props.completed ? 'line-through' : 'none'};
-  opacity: ${props => props.completed ? 0.7 : 1};
+  text-decoration-line: ${props => (props.completed ? 'line-through' : 'none')};
+  opacity: ${props => (props.completed ? 0.7 : 1)};
 `;
 
 export const TaskInfoRow = styled(View)`
@@ -87,20 +94,22 @@ export const TaskInfoRow = styled(View)`
 export const TaskStatus = styled(Text)<CompletedProps>`
   font-size: ${props => props.theme.WP(3)}px;
   font-weight: 500;
-  color: ${props => props.completed ?
-    props.theme.DefaultPalette().success.main :
-    props.theme.DefaultPalette().primary.main};
+  color: ${props =>
+    props.completed
+      ? props.theme.DefaultPalette().success.main
+      : props.theme.DefaultPalette().primary.main};
 `;
 
 export const PriorityBadge = styled(View)<PriorityProps>`
   flex-direction: row;
   align-items: center;
-  background-color: ${props => props.color ? `${props.color}10` : 'transparent'};
+  background-color: ${props =>
+    props.color ? `${props.color}10` : 'transparent'};
   padding-horizontal: ${props => props.theme.WP(2)}px;
   padding-vertical: ${props => props.theme.WP(0.5)}px;
   border-radius: ${props => props.theme.WP(4)}px;
   border-width: 1px;
-  border-color: ${props => props.color ? `${props.color}40` : 'transparent'};
+  border-color: ${props => (props.color ? `${props.color}40` : 'transparent')};
 `;
 
 export const PriorityText = styled(Text)<PriorityProps>`
@@ -171,15 +180,17 @@ export const ModalButton = styled(TouchableOpacity)<ModalButtonProps>`
   border-radius: 8px;
   min-width: 45%;
   align-items: center;
-  background-color: ${props => props.variant === 'danger' ?
-    props.theme.DefaultPalette().error.main :
-    props.theme.DefaultPalette().background.default};
+  background-color: ${props =>
+    props.variant === 'danger'
+      ? props.theme.DefaultPalette().error.main
+      : props.theme.DefaultPalette().background.default};
 `;
 
 export const ButtonText = styled(Text)<ModalButtonProps>`
   font-size: ${props => props.theme.WP(3.5)}px;
   font-weight: 600;
-  color: ${props => props.variant === 'danger' ?
-    props.theme.DefaultPalette().common.white :
-    props.theme.DefaultPalette().text.body};
+  color: ${props =>
+    props.variant === 'danger'
+      ? props.theme.DefaultPalette().common.white
+      : props.theme.DefaultPalette().text.body};
 `;

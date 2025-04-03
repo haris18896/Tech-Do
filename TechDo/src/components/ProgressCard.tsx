@@ -4,7 +4,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils
-import { theme as themeUtils } from '../@core/infrustructure/theme';
+import {theme as themeUtils} from '../@core/infrustructure/theme';
 
 // ** Custom Components
 import {
@@ -33,7 +33,8 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
   icon,
   accentColor,
 }) => {
-  const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  const progressPercentage =
+    totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <CardContainer>

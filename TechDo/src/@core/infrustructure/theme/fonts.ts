@@ -1,4 +1,3 @@
-
 export interface Fonts {
   body: string;
   heading: string;

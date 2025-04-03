@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 
 interface ThemeProps {
   theme: {

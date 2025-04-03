@@ -1,7 +1,7 @@
 import React from 'react';
 
 // ** Utils
-import { useAppTheme } from '../@core/infrustructure/theme/useAppTheme';
+import {useAppTheme} from '../@core/infrustructure/theme/useAppTheme';
 
 // ** Components
 import {
@@ -34,20 +34,19 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
   monthlyTotal,
   monthlyCompleted,
 }) => {
-  const { palette } = useAppTheme();
+  const {palette} = useAppTheme();
 
   // Calculate overall totals
   const totalTasks = dailyTotal + weeklyTotal + monthlyTotal;
   const totalCompleted = dailyCompleted + weeklyCompleted + monthlyCompleted;
-  const overallPercentage = totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0;
+  const overallPercentage =
+    totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0;
 
   return (
     <Container>
       <OverallProgressCard>
         <OverallProgressLeft>
-          <ProgressTitle>
-            Overall Progress
-          </ProgressTitle>
+          <ProgressTitle>Overall Progress</ProgressTitle>
           <ProgressSubtitle>
             {totalCompleted} of {totalTasks} tasks completed
           </ProgressSubtitle>
@@ -55,18 +54,12 @@ const ProgressSummary: React.FC<ProgressSummaryProps> = ({
 
         <ProgressCircleContainer>
           <ProgressCircle>
-            <ProgressPercentage>
-              {overallPercentage}%
-            </ProgressPercentage>
+            <ProgressPercentage>{overallPercentage}%</ProgressPercentage>
           </ProgressCircle>
         </ProgressCircleContainer>
       </OverallProgressCard>
 
-      {/* Category Progress Cards */}
-      <CategoryCardsContainer
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <CategoryCardsContainer horizontal showsHorizontalScrollIndicator={false}>
         <ProgressCard
           title="Daily Tasks"
           completedTasks={dailyCompleted}

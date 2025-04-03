@@ -1,9 +1,9 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { auth } from '../../../config/firebase';
+import React, {createContext, useState, useContext, useEffect} from 'react';
+import {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {auth} from '../../../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { showToast } from '../../../utils/utils';
-import { navigateTo } from '../../../navigation/utils';
+import {showToast} from '../../../utils/utils';
+import {navigateTo} from '../../../navigation/utils';
 
 interface AuthContextType {
   user: FirebaseAuthTypes.User | null;
@@ -17,31 +17,40 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
+  children,
+}) => {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((userState: FirebaseAuthTypes.User | null) => {
-      setUser(userState);
+    const subscriber = auth().onAuthStateChanged(
+      (userState: FirebaseAuthTypes.User | null) => {
+        setUser(userState);
 
-      if (userState) {
-        AsyncStorage.setItem('userId', userState.uid)
-          .catch(err => console.error('Error saving user ID to AsyncStorage:', err));
-      } else {
-        AsyncStorage.removeItem('userId')
-          .catch(err => console.error('Error removing user ID from AsyncStorage:', err));
-      }
+        if (userState) {
+          AsyncStorage.setItem('userId', userState.uid).catch(err =>
+            console.error('Error saving user ID to AsyncStorage:', err),
+          );
+        } else {
+          AsyncStorage.removeItem('userId').catch(err =>
+            console.error('Error removing user ID from AsyncStorage:', err),
+          );
+        }
 
-      setLoading(false);
-    });
+        setLoading(false);
+      },
+    );
 
     return subscriber;
   }, []);
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
 
       if (userCredential.user) {
         await userCredential.user.updateProfile({
@@ -70,7 +79,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        password,
+      );
 
       if (userCredential.user) {
         showToast({

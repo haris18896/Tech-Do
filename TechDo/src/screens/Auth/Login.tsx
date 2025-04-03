@@ -23,7 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {isObjEmpty} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
-import { useAuth } from '../../@core/infrustructure/context/AuthContext';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {
@@ -53,7 +53,7 @@ const Login = () => {
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { signIn } = useAuth();
+  const {signIn} = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<String>('');

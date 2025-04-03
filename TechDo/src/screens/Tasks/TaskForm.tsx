@@ -1,21 +1,32 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { ScrollView, View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useState, useEffect, useContext, useRef} from 'react';
+import {
+  ScrollView,
+  View,
+  Modal,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Custom Components
-import { TaskContext } from './TaskTabs';
-import { Layout } from '../../@core/layout';
-import { BarHeader } from '../../@core/components';
-import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
-import { theme as themeUtils } from '../../@core/infrustructure/theme';
+import {TaskContext} from './TaskTabs';
+import {Layout} from '../../@core/layout';
+import {BarHeader} from '../../@core/components';
+import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import {theme as themeUtils} from '../../@core/infrustructure/theme';
 
 // ** Utils
-import { Task } from '../../utils/constants';
+import {Task} from '../../utils/constants';
 
 // ** Store && Actions
-import { useAuth } from '../../@core/infrustructure/context/AuthContext';
-import { createTask, updateTask, deleteTask, subscribeToTasks } from '../../@core/auth/TaskService';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
+import {
+  createTask,
+  updateTask,
+  deleteTask,
+  subscribeToTasks,
+} from '../../@core/auth/TaskService';
 
 // ** Styled Components
 import {
@@ -52,7 +63,7 @@ import {
   ModalMessage,
   ModalActions,
 } from '../../styles/screens/TaskForm';
-import { SafeArea } from '../../styles/infrustucture';
+import {SafeArea} from '../../styles/infrustucture';
 
 interface DeleteModalProps {
   visible: boolean;
@@ -65,19 +76,22 @@ const DeleteConfirmModal: React.FC<DeleteModalProps> = ({
   onClose,
   onConfirm,
 }) => {
-  const { palette } = useAppTheme();
+  const {palette} = useAppTheme();
 
   return (
     <Modal
       transparent
       visible={visible}
       animationType="fade"
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <ModalOverlay>
         <ModalContent>
           <ModalHeader>
-            <Icon name="alert-circle-outline" size={themeUtils.WP(8)} color={palette.error.main} />
+            <Icon
+              name="alert-circle-outline"
+              size={themeUtils.WP(8)}
+              color={palette.error.main}
+            />
             <ModalTitle>Delete Task</ModalTitle>
           </ModalHeader>
 
@@ -86,7 +100,9 @@ const DeleteConfirmModal: React.FC<DeleteModalProps> = ({
           </ModalMessage>
 
           <ModalActions>
-            <SubmitButton style={{ backgroundColor: palette.grey[500] }} onPress={onClose}>
+            <SubmitButton
+              style={{backgroundColor: palette.grey[500]}}
+              onPress={onClose}>
               <ButtonText>Cancel</ButtonText>
             </SubmitButton>
 
@@ -103,10 +119,10 @@ const DeleteConfirmModal: React.FC<DeleteModalProps> = ({
 const TaskForm: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<any>();
-  const { palette } = useAppTheme();
-  const { user } = useAuth();
+  const {palette} = useAppTheme();
+  const {user} = useAuth();
   const taskContext = useContext(TaskContext);
-  const { refreshTasks } = taskContext;
+  const {refreshTasks} = taskContext;
 
   const taskId = route.params?.taskId;
   const _category = route.params?.category || 'daily';
@@ -119,7 +135,9 @@ const TaskForm: React.FC = () => {
   const [dueDate, setDueDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
-  const [category, setCategory] = useState<'daily' | 'weekly' | 'monthly'>(_category as 'daily' | 'weekly' | 'monthly');
+  const [category, setCategory] = useState<'daily' | 'weekly' | 'monthly'>(
+    _category as 'daily' | 'weekly' | 'monthly',
+  );
   const [completed, setCompleted] = useState(false);
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -127,23 +145,24 @@ const TaskForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formTasks, setFormTasks] = useState<Task[]>([]);
 
-  // Store unsubscribe function
   const unsubscribeRef = useRef<(() => void) | null>(null);
-
-  // Set up subscription to tasks based on _category
   useEffect(() => {
-    if (!user) {return;}
+    if (!user) {
+      return;
+    }
 
-    // Clean up any existing subscription
     if (unsubscribeRef.current) {
       unsubscribeRef.current();
       unsubscribeRef.current = null;
     }
 
-    // Subscribe to tasks of the specified category
-    const unsubscribe = subscribeToTasks(user.uid, _category as 'daily' | 'weekly' | 'monthly', (tasks) => {
-      setFormTasks(tasks);
-    });
+    const unsubscribe = subscribeToTasks(
+      user.uid,
+      _category as 'daily' | 'weekly' | 'monthly',
+      tasks => {
+        setFormTasks(tasks);
+      },
+    );
 
     unsubscribeRef.current = unsubscribe;
 
@@ -154,20 +173,25 @@ const TaskForm: React.FC = () => {
     };
   }, [user, _category]);
 
-  // Find task by ID after tasks are loaded
   useEffect(() => {
     if (isEditMode && taskId && formTasks.length > 0) {
-      console.log(`[TaskForm] Looking for task with ID: ${taskId} in ${formTasks.length} ${_category} tasks`);
+      console.log(
+        `[TaskForm] Looking for task with ID: ${taskId} in ${formTasks.length} ${_category} tasks`,
+      );
 
-      const foundTask = formTasks.find((t) => t.id === taskId);
+      const foundTask = formTasks.find(t => t.id === taskId);
 
       if (foundTask) {
         console.log(`[TaskForm] Found task: ${foundTask.title}`);
         setTask(foundTask);
         setTitle(foundTask.title);
         setDescription(foundTask.description || '');
-        setDueDate(foundTask.dueDate ? new Date(foundTask.dueDate) : new Date());
-        setCalendarDate(foundTask.dueDate ? new Date(foundTask.dueDate) : new Date());
+        setDueDate(
+          foundTask.dueDate ? new Date(foundTask.dueDate) : new Date(),
+        );
+        setCalendarDate(
+          foundTask.dueDate ? new Date(foundTask.dueDate) : new Date(),
+        );
         setPriority(foundTask.priority || 'medium');
         setCategory(foundTask.category || 'daily');
         setCompleted(foundTask.completed);
@@ -179,7 +203,6 @@ const TaskForm: React.FC = () => {
     }
   }, [isEditMode, taskId, formTasks, _category]);
 
-  // Format date for display
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
@@ -213,18 +236,22 @@ const TaskForm: React.FC = () => {
     const days = [];
 
     const prevMonthLastDay = new Date(year, month, 0).getDate();
-    for (let i = prevMonthLastDay - daysBefore + 1; i <= prevMonthLastDay; i++) {
-      days.push({ day: i, current: false, date: new Date(year, month - 1, i) });
+    for (
+      let i = prevMonthLastDay - daysBefore + 1;
+      i <= prevMonthLastDay;
+      i++
+    ) {
+      days.push({day: i, current: false, date: new Date(year, month - 1, i)});
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
-      days.push({ day: i, current: true, date: new Date(year, month, i) });
+      days.push({day: i, current: true, date: new Date(year, month, i)});
     }
 
     const totalDaysNeeded = 42;
     const daysAfter = totalDaysNeeded - days.length;
     for (let i = 1; i <= daysAfter; i++) {
-      days.push({ day: i, current: false, date: new Date(year, month + 1, i) });
+      days.push({day: i, current: false, date: new Date(year, month + 1, i)});
     }
 
     return days;
@@ -260,21 +287,31 @@ const TaskForm: React.FC = () => {
         transparent
         visible={showDatePicker}
         animationType="fade"
-        onRequestClose={() => setShowDatePicker(false)}
-      >
+        onRequestClose={() => setShowDatePicker(false)}>
         <ModalOverlay>
           <ModalContent>
             <MonthYearSelector>
               <ArrowButton onPress={prevMonth}>
-                <Icon name="chevron-left" size={themeUtils.WP(6)} color={palette.primary.main} />
+                <Icon
+                  name="chevron-left"
+                  size={themeUtils.WP(6)}
+                  color={palette.primary.main}
+                />
               </ArrowButton>
 
               <MonthYearText>
-                {calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                {calendarDate.toLocaleDateString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </MonthYearText>
 
               <ArrowButton onPress={nextMonth}>
-                <Icon name="chevron-right" size={themeUtils.WP(6)} color={palette.primary.main} />
+                <Icon
+                  name="chevron-right"
+                  size={themeUtils.WP(6)}
+                  color={palette.primary.main}
+                />
               </ArrowButton>
             </MonthYearSelector>
 
@@ -286,9 +323,10 @@ const TaskForm: React.FC = () => {
               ))}
             </CalendarRow>
 
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
               {days.map((day, index) => {
-                const isSelected = day.current &&
+                const isSelected =
+                  day.current &&
                   day.date.getDate() === dueDate.getDate() &&
                   day.date.getMonth() === dueDate.getMonth() &&
                   day.date.getFullYear() === dueDate.getFullYear();
@@ -297,12 +335,8 @@ const TaskForm: React.FC = () => {
                   <DayButton
                     key={index}
                     selected={isSelected}
-                    onPress={() => selectDay(day.date)}
-                  >
-                    <DayText
-                      selected={isSelected}
-                      muted={!day.current}
-                    >
+                    onPress={() => selectDay(day.date)}>
+                    <DayText selected={isSelected} muted={!day.current}>
                       {day.day}
                     </DayText>
                   </DayButton>
@@ -320,8 +354,12 @@ const TaskForm: React.FC = () => {
   };
 
   const handleSaveTask = async () => {
-    if (!user) {return;}
-    if (isEditMode && !task) {return;}
+    if (!user) {
+      return;
+    }
+    if (isEditMode && !task) {
+      return;
+    }
 
     setIsLoading(true);
 
@@ -354,14 +392,19 @@ const TaskForm: React.FC = () => {
         navigation.goBack();
       }
     } catch (error) {
-      console.error(`Error ${isEditMode ? 'updating' : 'creating'} task:`, error);
+      console.error(
+        `Error ${isEditMode ? 'updating' : 'creating'} task:`,
+        error,
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDeleteTask = async () => {
-    if (!taskId) {return;}
+    if (!taskId) {
+      return;
+    }
 
     setIsLoading(true);
 
@@ -380,8 +423,8 @@ const TaskForm: React.FC = () => {
     return (
       <Layout>
         <BarHeader
-          showChat={{ badge: false, chat: false }}
-          showNotification={{ notification: false, badge: false }}
+          showChat={{badge: false, chat: false}}
+          showNotification={{notification: false, badge: false}}
           onBack={() => navigation.goBack()}
         />
         <Container>
@@ -391,162 +434,174 @@ const TaskForm: React.FC = () => {
     );
   }
 
-  // if (isLoading) {
-  //   return renderLoadingSpinner(palette);
-  // }
-
   return (
     <Layout>
-        <SafeArea>
-      <BarHeader
-        showChat={{ badge: false, chat: false }}
-        showNotification={{ notification: false, badge: false }}
-        onBack={() => navigation.goBack()}
-      />
+      <SafeArea>
+        <BarHeader
+          showChat={{badge: false, chat: false}}
+          showNotification={{notification: false, badge: false}}
+          onBack={() => navigation.goBack()}
+        />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Container>
-          <Title>{isEditMode ? 'Edit Task' : 'Create New Task'}</Title>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Container>
+            <Title>{isEditMode ? 'Edit Task' : 'Create New Task'}</Title>
+
+            {isEditMode && (
+              <StatusBar>
+                <StatusIndicator completed={completed} />
+                <StatusText completed={completed}>
+                  {completed ? 'Completed' : 'In Progress'}
+                </StatusText>
+
+                <OptionButton
+                  style={{marginLeft: 'auto'}}
+                  selected={completed}
+                  color={completed ? palette.success.main : palette.grey[400]}
+                  onPress={toggleComplete}>
+                  <OptionText selected={completed}>
+                    {completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+                  </OptionText>
+                </OptionButton>
+              </StatusBar>
+            )}
+
+            <InputContainer>
+              <InputLabel>Task Title</InputLabel>
+              <TextInput
+                placeholder="Enter task title"
+                value={title}
+                onChangeText={setTitle}
+                placeholderTextColor={palette.text.secondary}
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <InputLabel>Description</InputLabel>
+              <TextArea
+                placeholder="Enter task description..."
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                numberOfLines={4}
+                placeholderTextColor={palette.text.secondary}
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <InputLabel>Due Date</InputLabel>
+              <DateContainer onPress={() => setShowDatePicker(true)}>
+                <DateText>{formatDate(dueDate)}</DateText>
+                <Icon
+                  name="calendar"
+                  size={themeUtils.WP(5)}
+                  color={palette.primary.main}
+                />
+              </DateContainer>
+              {renderCustomCalendar()}
+            </InputContainer>
+
+            <InputContainer>
+              <InputLabel>Priority</InputLabel>
+              <OptionContainer>
+                <OptionButton
+                  selected={priority === 'low'}
+                  color={priorityColors.low}
+                  onPress={() => setPriority('low')}>
+                  <OptionText selected={priority === 'low'}>Low</OptionText>
+                </OptionButton>
+
+                <OptionButton
+                  selected={priority === 'medium'}
+                  color={priorityColors.medium}
+                  onPress={() => setPriority('medium')}>
+                  <OptionText selected={priority === 'medium'}>
+                    Medium
+                  </OptionText>
+                </OptionButton>
+
+                <OptionButton
+                  selected={priority === 'high'}
+                  color={priorityColors.high}
+                  onPress={() => setPriority('high')}>
+                  <OptionText selected={priority === 'high'}>High</OptionText>
+                </OptionButton>
+              </OptionContainer>
+            </InputContainer>
+
+            <InputContainer>
+              <InputLabel>Category</InputLabel>
+              <OptionContainer>
+                <OptionButton
+                  selected={category === 'daily'}
+                  color={categoryColors.daily}
+                  onPress={() => setCategory('daily')}>
+                  <OptionText selected={category === 'daily'}>Daily</OptionText>
+                </OptionButton>
+
+                <OptionButton
+                  selected={category === 'weekly'}
+                  color={categoryColors.weekly}
+                  onPress={() => setCategory('weekly')}>
+                  <OptionText selected={category === 'weekly'}>
+                    Weekly
+                  </OptionText>
+                </OptionButton>
+
+                <OptionButton
+                  selected={category === 'monthly'}
+                  color={categoryColors.monthly}
+                  onPress={() => setCategory('monthly')}>
+                  <OptionText selected={category === 'monthly'}>
+                    Monthly
+                  </OptionText>
+                </OptionButton>
+              </OptionContainer>
+            </InputContainer>
+          </Container>
+        </ScrollView>
+
+        <ActionContainer>
+          <SubmitButton onPress={handleSaveTask} disabled={isLoading}>
+            <Icon
+              name={isEditMode ? 'content-save' : 'check'}
+              size={themeUtils.WP(5)}
+              color={palette.common.white}
+            />
+            <ButtonText>
+              {isLoading
+                ? 'Saving...'
+                : isEditMode
+                  ? 'Save Changes'
+                  : 'Create Task'}
+            </ButtonText>
+            {isLoading && (
+              <View style={styles.ActivityIndicator}>
+                <ActivityIndicator size="small" color={palette.common.white} />
+              </View>
+            )}
+          </SubmitButton>
 
           {isEditMode && (
-            <StatusBar>
-              <StatusIndicator completed={completed} />
-              <StatusText completed={completed}>
-                {completed ? 'Completed' : 'In Progress'}
-              </StatusText>
-
-              <OptionButton
-                style={{ marginLeft: 'auto' }}
-                selected={completed}
-                color={completed ? palette.success.main : palette.grey[400]}
-                onPress={toggleComplete}
-              >
-                <OptionText selected={completed}>
-                  {completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-                </OptionText>
-              </OptionButton>
-            </StatusBar>
+            <DeleteButton
+              onPress={() => setDeleteModalVisible(true)}
+              disabled={isLoading}>
+              <Icon
+                name="delete"
+                size={themeUtils.WP(5)}
+                color={palette.common.white}
+              />
+            </DeleteButton>
           )}
-
-          <InputContainer>
-            <InputLabel>Task Title</InputLabel>
-            <TextInput
-              placeholder="Enter task title"
-              value={title}
-              onChangeText={setTitle}
-              placeholderTextColor={palette.text.secondary}
-            />
-          </InputContainer>
-
-          <InputContainer>
-            <InputLabel>Description</InputLabel>
-            <TextArea
-              placeholder="Enter task description..."
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              placeholderTextColor={palette.text.secondary}
-            />
-          </InputContainer>
-
-          <InputContainer>
-            <InputLabel>Due Date</InputLabel>
-            <DateContainer onPress={() => setShowDatePicker(true)}>
-              <DateText>{formatDate(dueDate)}</DateText>
-              <Icon name="calendar" size={themeUtils.WP(5)} color={palette.primary.main} />
-            </DateContainer>
-            {renderCustomCalendar()}
-          </InputContainer>
-
-          <InputContainer>
-            <InputLabel>Priority</InputLabel>
-            <OptionContainer>
-              <OptionButton
-                selected={priority === 'low'}
-                color={priorityColors.low}
-                onPress={() => setPriority('low')}
-              >
-                <OptionText selected={priority === 'low'}>Low</OptionText>
-              </OptionButton>
-
-              <OptionButton
-                selected={priority === 'medium'}
-                color={priorityColors.medium}
-                onPress={() => setPriority('medium')}
-              >
-                <OptionText selected={priority === 'medium'}>Medium</OptionText>
-              </OptionButton>
-
-              <OptionButton
-                selected={priority === 'high'}
-                color={priorityColors.high}
-                onPress={() => setPriority('high')}
-              >
-                <OptionText selected={priority === 'high'}>High</OptionText>
-              </OptionButton>
-            </OptionContainer>
-          </InputContainer>
-
-          <InputContainer>
-            <InputLabel>Category</InputLabel>
-            <OptionContainer>
-              <OptionButton
-                selected={category === 'daily'}
-                color={categoryColors.daily}
-                onPress={() => setCategory('daily')}
-              >
-                <OptionText selected={category === 'daily'}>Daily</OptionText>
-              </OptionButton>
-
-              <OptionButton
-                selected={category === 'weekly'}
-                color={categoryColors.weekly}
-                onPress={() => setCategory('weekly')}
-              >
-                <OptionText selected={category === 'weekly'}>Weekly</OptionText>
-              </OptionButton>
-
-              <OptionButton
-                selected={category === 'monthly'}
-                color={categoryColors.monthly}
-                onPress={() => setCategory('monthly')}
-              >
-                <OptionText selected={category === 'monthly'}>Monthly</OptionText>
-              </OptionButton>
-            </OptionContainer>
-          </InputContainer>
-        </Container>
-      </ScrollView>
-
-      <ActionContainer>
-        <SubmitButton onPress={handleSaveTask} disabled={isLoading}>
-          <Icon
-            name={isEditMode ? 'content-save' : 'check'}
-            size={themeUtils.WP(5)}
-            color={palette.common.white}
-          />
-          <ButtonText>
-            {isLoading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Task'}
-          </ButtonText>
-            {isLoading && <View style={styles.ActivityIndicator}><ActivityIndicator size="small" color={palette.common.white} /></View>}
-
-        </SubmitButton>
+        </ActionContainer>
 
         {isEditMode && (
-          <DeleteButton onPress={() => setDeleteModalVisible(true)} disabled={isLoading}>
-            <Icon name="delete" size={themeUtils.WP(5)} color={palette.common.white} />
-          </DeleteButton>
+          <DeleteConfirmModal
+            visible={deleteModalVisible}
+            onClose={() => setDeleteModalVisible(false)}
+            onConfirm={handleDeleteTask}
+          />
         )}
-      </ActionContainer>
-
-      {isEditMode && (
-        <DeleteConfirmModal
-          visible={deleteModalVisible}
-          onClose={() => setDeleteModalVisible(false)}
-          onConfirm={handleDeleteTask}
-        />
-      )}
       </SafeArea>
     </Layout>
   );
