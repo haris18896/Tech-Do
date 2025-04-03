@@ -1,4 +1,5 @@
-# TechDo
+# TechDo ![ic_launcher](https://github.com/user-attachments/assets/859cf75e-63ce-4356-b194-caeb73a37162)
+
 
 A modern React Native todo application with advanced features.
 
