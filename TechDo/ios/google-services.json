@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374151069320",
+    "project_id": "tech-do",
+    "storage_bucket": "tech-do.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374151069320:android:ecf029d4332eeef520a93d",
+        "android_client_info": {
+          "package_name": "com.techdo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzhGyHQ65Kzy6OLJscm9Ze-o4uuyC9psM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
