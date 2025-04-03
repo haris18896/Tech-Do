@@ -18,6 +18,7 @@ import {theme as themeUtils} from '../../@core/infrustructure/theme';
 
 // ** Utils
 import {Task} from '../../utils/constants';
+import {showToast} from '../../utils/utils';
 
 // ** Store && Actions
 import {useAuth} from '../../@core/infrustructure/context/AuthContext';
@@ -361,6 +362,25 @@ const TaskForm: React.FC = () => {
       return;
     }
 
+    // Check for empty title or description
+    if (!title.trim()) {
+      showToast({
+        type: 'error',
+        title: 'Validation Error',
+        message: 'Please enter a task title',
+      });
+      return;
+    }
+
+    if (!description.trim()) {
+      showToast({
+        type: 'error',
+        title: 'Validation Error',
+        message: 'Please enter a task description',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -376,9 +396,19 @@ const TaskForm: React.FC = () => {
 
       if (isEditMode && taskId) {
         await updateTask(taskId, taskData);
+        showToast({
+          type: 'success',
+          title: 'Success',
+          message: 'Task updated successfully',
+        });
         navigation.goBack();
       } else {
         await createTask(taskData);
+        showToast({
+          type: 'success',
+          title: 'Success',
+          message: 'Task created successfully',
+        });
         refreshTasks();
 
         // Refresh the task
@@ -396,6 +426,11 @@ const TaskForm: React.FC = () => {
         `Error ${isEditMode ? 'updating' : 'creating'} task:`,
         error,
       );
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: `Failed to ${isEditMode ? 'update' : 'create'} task. Please try again.`,
+      });
     } finally {
       setIsLoading(false);
     }
