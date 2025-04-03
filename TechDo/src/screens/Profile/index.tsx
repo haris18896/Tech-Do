@@ -174,7 +174,7 @@ const Profile: React.FC = () => {
                     size={themeUtils.WP(5)}
                     color={palette.secondary?.main}
                   />
-                  <TextItem>Phone number</TextItem>
+                  <TextItem>{user?.phoneNumber || 'No phone number provided'}</TextItem>
                 </RowStart>
 
                 <RowStart>

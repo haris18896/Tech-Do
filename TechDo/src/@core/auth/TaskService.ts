@@ -60,6 +60,7 @@ export const getTasksByCategory = async (userId: string, category?: 'daily' | 'w
       } as Task;
     });
   } catch (error: any) {
+    console.log('error : ', JSON.stringify(error));
     showToast({
       type: 'error',
       title: 'Error',

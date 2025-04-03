@@ -3,6 +3,7 @@ import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { auth } from '../../../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { showToast } from '../../../utils/utils';
+import { navigateTo } from '../../../navigation/utils';
 
 interface AuthContextType {
   user: FirebaseAuthTypes.User | null;
@@ -47,7 +48,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           displayName: name,
         });
 
-        setUser({...userCredential.user});
+        await AsyncStorage.setItem('userId', userCredential.user.uid);
+
+        setUser(userCredential.user);
       }
 
       showToast({
@@ -67,12 +70,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      await auth().signInWithEmailAndPassword(email, password);
-      showToast({
-        type: 'success',
-        title: 'Success',
-        message: 'Logged in successfully',
-      });
+      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+
+      if (userCredential.user) {
+        showToast({
+          type: 'success',
+          title: 'Success',
+          message: 'Logged in successfully',
+        });
+
+        await AsyncStorage.setItem('userId', userCredential.user.uid);
+        setUser(userCredential.user);
+        navigateTo('App');
+      }
     } catch (error: any) {
       showToast({
         type: 'error',

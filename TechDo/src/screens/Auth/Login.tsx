@@ -1,6 +1,7 @@
 import React, {useRef, useEffect, useState} from 'react';
 import {
   View,
+  Alert,
   Image,
   Keyboard,
   Platform,
@@ -52,7 +53,7 @@ const Login = () => {
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { signIn, user } = useAuth();
+  const { signIn } = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<String>('');
@@ -95,14 +96,8 @@ const Login = () => {
           if (rememberMe === 'checked') {
             await AsyncStorage.setItem('login_creds', JSON.stringify(values));
           }
-
-          if (user) {
-            await AsyncStorage.setItem('userId', user.uid);
-          }
-
-          navigation.navigate('App');
         } catch (error) {
-          console.error('Login error:', error);
+          Alert.alert('Error', 'Failed to login. Please try again.');
         } finally {
           setIsLoading('');
         }

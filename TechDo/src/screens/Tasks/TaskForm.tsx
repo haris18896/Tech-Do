@@ -107,10 +107,7 @@ const TaskForm: React.FC = () => {
   const taskContext = useContext(TaskContext);
   const { refreshTasks, dailyTasks, weeklyTasks, monthlyTasks } = taskContext;
 
-  // Get taskId from route params
   const taskId = route.params?.taskId;
-
-  // Determine if we're in edit mode
   const isEditMode = !!taskId;
 
   // Task state
@@ -130,7 +127,6 @@ const TaskForm: React.FC = () => {
   // Find the task if in edit mode
   useEffect(() => {
     if (isEditMode) {
-      // Get all tasks from the context
       const allTasks = [...dailyTasks, ...weeklyTasks, ...monthlyTasks];
       const foundTask = allTasks.find(t => t.id === taskId);
 
@@ -159,54 +155,42 @@ const TaskForm: React.FC = () => {
     });
   };
 
-  // Priority colors
   const priorityColors = {
     low: palette.success.main,
     medium: palette.warning.main,
     high: palette.error.main,
   };
 
-  // Category colors
   const categoryColors = {
     daily: palette.primary.main,
     weekly: palette.secondary.main,
     monthly: palette.info.main,
   };
 
-  // Generate days for custom calendar
   const generateCalendarDays = () => {
     const year = calendarDate.getFullYear();
     const month = calendarDate.getMonth();
 
-    // First day of the month
     const firstDay = new Date(year, month, 1);
-    // Last day of the month
     const lastDay = new Date(year, month + 1, 0);
 
-    // Get day of week for first day (0 = Sunday)
     const firstDayOfWeek = firstDay.getDay();
 
-    // Days in the current month
     const daysInMonth = lastDay.getDate();
 
-    // Days from previous month to show
     const daysBefore = firstDayOfWeek;
 
-    // Array to hold all calendar days
     const days = [];
 
-    // Add days from previous month
     const prevMonthLastDay = new Date(year, month, 0).getDate();
     for (let i = prevMonthLastDay - daysBefore + 1; i <= prevMonthLastDay; i++) {
       days.push({ day: i, current: false, date: new Date(year, month - 1, i) });
     }
 
-    // Add days from current month
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ day: i, current: true, date: new Date(year, month, i) });
     }
 
-    // Add days from next month to complete the calendar grid (6 rows x 7 columns = 42)
     const totalDaysNeeded = 42;
     const daysAfter = totalDaysNeeded - days.length;
     for (let i = 1; i <= daysAfter; i++) {
@@ -216,32 +200,27 @@ const TaskForm: React.FC = () => {
     return days;
   };
 
-  // Move to previous month
   const prevMonth = () => {
     const prev = new Date(calendarDate);
     prev.setMonth(prev.getMonth() - 1);
     setCalendarDate(prev);
   };
 
-  // Move to next month
   const nextMonth = () => {
     const next = new Date(calendarDate);
     next.setMonth(next.getMonth() + 1);
     setCalendarDate(next);
   };
 
-  // Select a day from the calendar
   const selectDay = (date: Date) => {
     setDueDate(date);
     setShowDatePicker(false);
   };
 
-  // Toggle task completion status (only in edit mode)
   const toggleComplete = () => {
     setCompleted(!completed);
   };
 
-  // Custom calendar component
   const renderCustomCalendar = () => {
     const days = generateCalendarDays();
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -310,7 +289,6 @@ const TaskForm: React.FC = () => {
     );
   };
 
-  // Handle task save (either create or update)
   const handleSaveTask = async () => {
     if (!user) {return;}
     if (isEditMode && !task) {return;}
@@ -329,17 +307,11 @@ const TaskForm: React.FC = () => {
       };
 
       if (isEditMode && taskId) {
-        // Update existing task
         await updateTask(taskId, taskData);
       } else {
-        // Create new task
         await createTask(taskData);
       }
-
-      // Refresh tasks in the context
       refreshTasks();
-
-      // Navigate back to dashboard
       navigation.goBack();
     } catch (error) {
       console.error(`Error ${isEditMode ? 'updating' : 'creating'} task:`, error);
@@ -348,20 +320,14 @@ const TaskForm: React.FC = () => {
     }
   };
 
-  // Handle task deletion (only in edit mode)
   const handleDeleteTask = async () => {
     if (!taskId) {return;}
 
     setIsLoading(true);
 
     try {
-      // Delete task from Firestore
       await deleteTask(taskId);
-
-      // Refresh tasks in the context
       refreshTasks();
-
-      // Navigate back to dashboard
       navigation.goBack();
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -370,7 +336,6 @@ const TaskForm: React.FC = () => {
     }
   };
 
-  // Show task not found message if in edit mode and task wasn't found
   if (isEditMode && taskNotFound) {
     return (
       <Layout>
@@ -403,7 +368,6 @@ const TaskForm: React.FC = () => {
         <Container>
           <Title>{isEditMode ? 'Edit Task' : 'Create New Task'}</Title>
 
-          {/* Status bar - Only shown in edit mode */}
           {isEditMode && (
             <StatusBar>
               <StatusIndicator completed={completed} />
@@ -527,7 +491,6 @@ const TaskForm: React.FC = () => {
           </ButtonText>
         </SubmitButton>
 
-        {/* Delete button - Only shown in edit mode */}
         {isEditMode && (
           <DeleteButton onPress={() => setDeleteModalVisible(true)} disabled={isLoading}>
             <Icon name="delete" size={themeUtils.WP(5)} color={palette.common.white} />
@@ -535,7 +498,6 @@ const TaskForm: React.FC = () => {
         )}
       </ActionContainer>
 
-      {/* Delete confirmation modal - Only used in edit mode */}
       {isEditMode && (
         <DeleteConfirmModal
           visible={deleteModalVisible}
