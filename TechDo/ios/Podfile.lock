@@ -3,11 +3,113 @@ PODS:
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
   - FBLazyVector (0.78.2)
+  - Firebase (11.10.0):
+    - Firebase/Core (= 11.10.0)
+  - Firebase/Core (11.10.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 11.10.0)
+  - Firebase/CoreOnly (11.10.0):
+    - FirebaseCore (~> 11.10.0)
+  - FirebaseAnalytics (11.10.0):
+    - FirebaseAnalytics/AdIdSupport (= 11.10.0)
+    - FirebaseCore (~> 11.10.0)
+    - FirebaseInstallations (~> 11.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/MethodSwizzler (~> 8.0)
+    - GoogleUtilities/Network (~> 8.0)
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+    - nanopb (~> 3.30910.0)
+  - FirebaseAnalytics/AdIdSupport (11.10.0):
+    - FirebaseCore (~> 11.10.0)
+    - FirebaseInstallations (~> 11.0)
+    - GoogleAppMeasurement (= 11.10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/MethodSwizzler (~> 8.0)
+    - GoogleUtilities/Network (~> 8.0)
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+    - nanopb (~> 3.30910.0)
+  - FirebaseCore (11.10.0):
+    - FirebaseCoreInternal (~> 11.10.0)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/Logger (~> 8.0)
+  - FirebaseCoreInternal (11.10.0):
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+  - FirebaseInstallations (11.10.0):
+    - FirebaseCore (~> 11.10.0)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
+    - PromisesObjC (~> 2.4)
   - fmt (11.0.2)
   - glog (0.3.5)
+  - GoogleAppMeasurement (11.10.0):
+    - GoogleAppMeasurement/AdIdSupport (= 11.10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/MethodSwizzler (~> 8.0)
+    - GoogleUtilities/Network (~> 8.0)
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+    - nanopb (~> 3.30910.0)
+  - GoogleAppMeasurement/AdIdSupport (11.10.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 11.10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/MethodSwizzler (~> 8.0)
+    - GoogleUtilities/Network (~> 8.0)
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+    - nanopb (~> 3.30910.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (11.10.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/MethodSwizzler (~> 8.0)
+    - GoogleUtilities/Network (~> 8.0)
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
+    - nanopb (~> 3.30910.0)
+  - GoogleUtilities (8.0.2):
+    - GoogleUtilities/AppDelegateSwizzler (= 8.0.2)
+    - GoogleUtilities/Environment (= 8.0.2)
+    - GoogleUtilities/Logger (= 8.0.2)
+    - GoogleUtilities/MethodSwizzler (= 8.0.2)
+    - GoogleUtilities/Network (= 8.0.2)
+    - "GoogleUtilities/NSData+zlib (= 8.0.2)"
+    - GoogleUtilities/Privacy (= 8.0.2)
+    - GoogleUtilities/Reachability (= 8.0.2)
+    - GoogleUtilities/SwizzlerTestHelpers (= 8.0.2)
+    - GoogleUtilities/UserDefaults (= 8.0.2)
+  - GoogleUtilities/AppDelegateSwizzler (8.0.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Environment (8.0.2):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Logger (8.0.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/MethodSwizzler (8.0.2):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Network (8.0.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Privacy
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (8.0.2)":
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Privacy (8.0.2)
+  - GoogleUtilities/Reachability (8.0.2):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/SwizzlerTestHelpers (8.0.2):
+    - GoogleUtilities/MethodSwizzler
+  - GoogleUtilities/UserDefaults (8.0.2):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
   - hermes-engine (0.78.2):
     - hermes-engine/Pre-built (= 0.78.2)
   - hermes-engine/Pre-built (0.78.2)
+  - nanopb (3.30910.0):
+    - nanopb/decode (= 3.30910.0)
+    - nanopb/encode (= 3.30910.0)
+  - nanopb/decode (3.30910.0)
+  - nanopb/encode (3.30910.0)
+  - PromisesObjC (2.4.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -1633,6 +1735,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNFBApp (21.13.0):
+    - Firebase/CoreOnly (= 11.10.0)
+    - React-Core
   - RNGestureHandler (2.25.0):
     - DoubleConversion
     - glog
@@ -1890,8 +1995,12 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
+  - Firebase
+  - FirebaseAnalytics
+  - FirebaseCore
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - GoogleUtilities
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1956,6 +2065,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1965,6 +2075,15 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreInternal
+    - FirebaseInstallations
+    - GoogleAppMeasurement
+    - GoogleUtilities
+    - nanopb
+    - PromisesObjC
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2105,6 +2224,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNFBApp:
+    :path: "../node_modules/@react-native-firebase/app"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -2123,9 +2244,18 @@ SPEC CHECKSUMS:
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: e32d34492c519a2194ec9d7f5e7a79d11b73f91c
+  Firebase: 1fe1c0a7d9aaea32efe01fbea5f0ebd8d70e53a2
+  FirebaseAnalytics: 4e42333f02cf78ed93703a5c36f36dd518aebdef
+  FirebaseCore: 8344daef5e2661eb004b177488d6f9f0f24251b7
+  FirebaseCoreInternal: ef4505d2afb1d0ebbc33162cb3795382904b5679
+  FirebaseInstallations: 9980995bdd06ec8081dfb6ab364162bdd64245c3
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
+  GoogleAppMeasurement: 36684bfb3ee034e2b42b4321eb19da3a1b81e65d
+  GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   hermes-engine: 2771b98fb813fdc6f92edd7c9c0035ecabf9fee7
+  nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
+  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 36fe2295e44b10d831836cc0d1daec5f8abcf809
   RCTDeprecation: be794de7dc6ed8f9f7fbf525f86e7651b8b68746
   RCTRequired: a83787b092ec554c2eb6019ff3f5b8d125472b3b
@@ -2187,6 +2317,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 99ea3536c05be3c18d0c517acb56b5a6d726fc7b
   ReactCommon: 865ebe76504a95e115b6229dd00a31e56d2d4bfe
   RNCAsyncStorage: 62fdbd7e63312228d4868779026248c2677911e1
+  RNFBApp: a438a9444c965b4b1053330f8e54217de2075823
   RNGestureHandler: dcb1b1db024f3744b03af56d132f4f72c4c27195
   RNReanimated: df8afe0155d72ee0856673d5478becd8661c31ae
   RNScreens: 790123c4a28783d80a342ce42e8c7381bed62db1
@@ -2195,6 +2326,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: e14bad835e12b6c7e2260fc320bd00e0f4b45add
 
-PODFILE CHECKSUM: 1e3d85a1d04a7704c1ba1f518f8ca69700291743
+PODFILE CHECKSUM: acfbd7fa1dc69db53e13dfbc2bd9386b335d1041
 
 COCOAPODS: 1.15.2
