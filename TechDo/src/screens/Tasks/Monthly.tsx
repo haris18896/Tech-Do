@@ -56,6 +56,7 @@ const Monthly: React.FC = () => {
             id={item.id}
             title={item.title}
             completed={item.completed}
+            priority={item.priority}
             onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
             onToggleComplete={(id, completed) =>
               handleToggleComplete(id, completed, tasks, setTasks, refreshTasks)}

@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
@@ -20,7 +20,7 @@ import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
 import { theme as themeUtils } from '../../@core/infrustructure/theme';
 import { useAuth } from '../../@core/infrustructure/context/AuthContext';
 import { Task } from '../../utils/constants';
-import { getTasksByCategory } from '../../@core/auth/TaskService';
+import { subscribeToTasks } from '../../@core/auth/TaskService';
 import { renderLoadingSpinner } from '../../utils/utils';
 
 // ** Styled Components
@@ -47,6 +47,7 @@ const TaskTabs: React.FC = () => {
   const { palette } = useAppTheme();
   const navigation = useNavigation();
   const { user } = useAuth();
+  const isMounted = useRef(true);
 
   // Tasks state
   const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
@@ -54,38 +55,55 @@ const TaskTabs: React.FC = () => {
   const [monthlyTasks, setMonthlyTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Fetch tasks from Firebase
-  const fetchTasks = async () => {
+  // Refs to store unsubscribe functions
+  const unsubscribersRef = useRef<(() => void)[]>([]);
+
+  useEffect(() => {
     if (!user) {return;}
 
     setIsLoading(true);
-    try {
-      // Fetch tasks for each category
-      const daily = await getTasksByCategory(user.uid, 'daily');
-      const weekly = await getTasksByCategory(user.uid, 'weekly');
-      const monthly = await getTasksByCategory(user.uid, 'monthly');
+    const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', (tasks) => {
+      if (isMounted.current) {
+        setDailyTasks(tasks);
+      }
+    });
 
-      setDailyTasks(daily);
-      setWeeklyTasks(weekly);
-      setMonthlyTasks(monthly);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    } finally {
-      setIsLoading(false);
+    const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', (tasks) => {
+      if (isMounted.current) {
+        setWeeklyTasks(tasks);
+      }
+    });
+
+    const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', (tasks) => {
+      if (isMounted.current) {
+        setMonthlyTasks(tasks);
+      }
+    });
+
+    unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+    setIsLoading(false);
+    return () => {
+      isMounted.current = false;
+      unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
+    };
+  }, [user]);
+
+  const refreshTasks = () => {
+    if (unsubscribersRef.current.length === 0 && user) {
+      unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
+
+      const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', setDailyTasks);
+      const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', setWeeklyTasks);
+      const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', setMonthlyTasks);
+
+      unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
     }
   };
 
-  // Fetch tasks on component mount and user change
-  useEffect(() => {
-    fetchTasks();
-  }, [user]);
-
-  // Navigate to task form screen for new task
   const navigateToNewTask = () => {
     navigation.navigate('TaskForm');
   };
 
-  // Show loading indicator during initial load
   if (isLoading && !dailyTasks.length && !weeklyTasks.length && !monthlyTasks.length) {
     return (
       <Layout>
@@ -121,7 +139,7 @@ const TaskTabs: React.FC = () => {
           dailyTasks,
           weeklyTasks,
           monthlyTasks,
-          refreshTasks: fetchTasks,
+          refreshTasks,
           isLoading,
         }}>
           <View style={{ flex: 1 }}>

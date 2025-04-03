@@ -83,6 +83,7 @@ export const ActionContainer = styled.View`
 `;
 
 export const SubmitButton = styled.TouchableOpacity`
+  position: relative;
   background-color: ${props => props.theme.DefaultPalette().primary.main};
   padding: ${themeUtils.WP(4)}px;
   border-radius: ${themeUtils.WP(2)}px;

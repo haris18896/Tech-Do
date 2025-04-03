@@ -15,57 +15,57 @@ import Toast from 'react-native-toast-message';
 
 export const isTablet = AppTheme?.scrWidth > 500;
 
-// Type guard to check if an object is empty
-export const isObjEmpty = (obj: Record<string, any>): boolean =>
-  Object.keys(obj).length === 0;
-
-// Define toast options interface
-interface ToastOptions {
-  title?: string;
-  message?: string | any;
-  type?: 'success' | 'error' | 'info' | 'warning';
-}
-
-// Show a toast message
+// ** Show Toast method to show toast messages
 export const showToast = ({
-  title = 'Title',
-  message = 'Message',
-  type = 'success',
-}: ToastOptions): void => {
+  type,
+  title,
+  message,
+}: {
+  type: 'success' | 'error' | 'info';
+  title: string;
+  message: string;
+}) => {
   Toast.show({
-    type: type,
+    type,
     text1: title,
     text2: message,
-    topOffset: Platform.OS === 'ios' ? AppTheme.WP(15) : AppTheme.WP(10),
-    // @ts-ignore - React Native Toast Message does support customText
-    customText: {
-      text1: {
-        fontSize: AppTheme.WP(5),
-        fontFamily: AppTheme.fonts.semiBold,
-        fontWeight: AppTheme.fontWeights.semiBold,
-      },
-      text2: {
-        fontSize: AppTheme.WP(3.5),
-        fontFamily: AppTheme.fonts?.medium,
-        fontWeight: AppTheme.fontWeights.medium,
-      },
-    },
+    position: 'bottom',
+    visibilityTime: 2000,
+    autoHide: true,
   });
 };
 
-export const lightenColor = (hex: string, percent: number): string => {
-  // Convert hex to RGB
-  let r = parseInt(hex.slice(1, 3), 16);
-  let g = parseInt(hex.slice(3, 5), 16);
-  let b = parseInt(hex.slice(5, 7), 16);
+// Check for empty objects
+export const isObjEmpty = (obj: Object) => {
+  return Object.keys(obj).length === 0;
+};
 
-  // Lighten each color channel
-  r = Math.min(255, Math.floor(r + (255 - r) * percent));
-  g = Math.min(255, Math.floor(g + (255 - g) * percent));
-  b = Math.min(255, Math.floor(b + (255 - b) * percent));
+export const renderLoadingSpinner = (palette: Record<string, any>) => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: palette.background.paper,
+      }}>
+      <ActivityIndicator size="large" color={palette.primary.main} />
+    </View>
+  );
+};
 
-  // Convert back to hex
-  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+export const renderEmptyState = (
+  palette: Record<string, any>,
+  title: string,
+  subtitle: string
+) => {
+  return (
+    <EmptyStateContainer>
+      <Icon name="clipboard-text-outline" size={50} color={palette.text.secondary} />
+      <EmptyStateTitle>{title}</EmptyStateTitle>
+      <EmptyStateSubtitle>{subtitle}</EmptyStateSubtitle>
+    </EmptyStateContainer>
+  );
 };
 
 /**
@@ -84,27 +84,35 @@ export const handleToggleComplete = async (
   refreshCallback?: () => void
 ): Promise<void> => {
   try {
-    // Update in Firestore
-    await toggleTaskComplete(id, completed);
-
-    // Update locally until refresh happens
+    // Optimistically update UI first for better user experience
     const updatedTasks = tasks.map(task =>
       task.id === id ? { ...task, completed, updatedAt: new Date().getTime() } : task
     );
     setTasks(updatedTasks);
-
-    // Call refresh if provided
-    if (refreshCallback) {
-      refreshCallback();
-    }
+    
+    // Then update in Firestore (won't need to refresh with real-time listeners)
+    await toggleTaskComplete(id, completed);
   } catch (error) {
     console.error('Error toggling task completion:', error);
+    
+    // Revert UI on error
+    const originalTasks = tasks.map(task =>
+      task.id === id ? { ...task, completed: !completed } : task
+    );
+    setTasks(originalTasks);
+    
+    // Show error toast
+    showToast({
+      type: 'error',
+      title: 'Error',
+      message: 'Failed to update task. Please try again.',
+    });
   }
 };
 
 /**
  * Handle task deletion in any task component
- * @param id Task ID to delete
+ * @param id Task ID
  * @param tasks Current tasks array
  * @param setTasks Function to update task state
  * @param refreshCallback Optional callback for refreshing task data
@@ -116,51 +124,41 @@ export const handleDeleteTask = async (
   refreshCallback?: () => void
 ): Promise<void> => {
   try {
-    // Delete from Firestore
-    await deleteTask(id);
-
-    // Update locally until refresh happens
+    // Optimistically update UI first for better user experience
     const updatedTasks = tasks.filter(task => task.id !== id);
     setTasks(updatedTasks);
-
-    // Call refresh if provided
+    
+    // Then delete from Firestore
+    await deleteTask(id);
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    
+    // If error, revert the UI change and show error
     if (refreshCallback) {
       refreshCallback();
     }
-  } catch (error) {
-    console.error('Error deleting task:', error);
+    
+    // Show error toast
+    showToast({
+      type: 'error',
+      title: 'Error',
+      message: 'Failed to delete task. Please try again.',
+    });
   }
 };
 
-/**
- * Render the empty state component with customizable messages
- * @param palette The theme palette for styling
- * @param title The title to display in the empty state
- * @param subtitle The subtitle to display in the empty state
- */
-export const renderEmptyState = (
-  palette: any,
-  title: string = 'No Tasks Yet',
-  subtitle: string = 'Tap the + button to add your first task'
-): JSX.Element => (
-  <EmptyStateContainer>
-    <Icon
-      name="checkbox-blank-circle-outline"
-      size={AppTheme.WP(20)}
-      color={palette.grey[300]}
-    />
-    <EmptyStateTitle>{title}</EmptyStateTitle>
-    <EmptyStateSubtitle>{subtitle}</EmptyStateSubtitle>
-  </EmptyStateContainer>
-);
+export const lightenColor = (hex: string, percent: number): string => {
+  // Convert hex to RGB
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
 
-/**
- * Render a loading spinner component
- * @param palette The theme palette for styling
- */
-export const renderLoadingSpinner = (palette: any): JSX.Element => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: palette.background.paper }}>
-    <ActivityIndicator size="large" color={palette.primary.main} />
-  </View>
-);
+  // Lighten each color channel
+  r = Math.min(255, Math.floor(r + (255 - r) * percent));
+  g = Math.min(255, Math.floor(g + (255 - g) * percent));
+  b = Math.min(255, Math.floor(b + (255 - b) * percent));
+
+  // Convert back to hex
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+};
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView, View, Modal } from 'react-native';
+import { ScrollView, View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Custom Components
+import { TaskContext } from './TaskTabs';
 import { Layout } from '../../@core/layout';
 import { BarHeader } from '../../@core/components';
 import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
@@ -11,10 +12,10 @@ import { theme as themeUtils } from '../../@core/infrustructure/theme';
 
 // ** Utils
 import { Task } from '../../utils/constants';
+
+// ** Store && Actions
 import { useAuth } from '../../@core/infrustructure/context/AuthContext';
 import { createTask, updateTask, deleteTask } from '../../@core/auth/TaskService';
-import { TaskContext } from './TaskTabs';
-import { renderLoadingSpinner } from '../../utils/utils';
 
 // ** Styled Components
 import {
@@ -173,13 +174,9 @@ const TaskForm: React.FC = () => {
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-
     const firstDayOfWeek = firstDay.getDay();
-
     const daysInMonth = lastDay.getDate();
-
     const daysBefore = firstDayOfWeek;
-
     const days = [];
 
     const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -310,9 +307,18 @@ const TaskForm: React.FC = () => {
         await updateTask(taskId, taskData);
       } else {
         await createTask(taskData);
+        refreshTasks();
+
+        // Refresh the task
+        setTitle('');
+        setDescription('');
+        setDueDate(new Date());
+        setCalendarDate(new Date());
+        setPriority('medium');
+        setCategory('daily');
+        setCompleted(false);
+        navigation.goBack();
       }
-      refreshTasks();
-      navigation.goBack();
     } catch (error) {
       console.error(`Error ${isEditMode ? 'updating' : 'creating'} task:`, error);
     } finally {
@@ -351,9 +357,9 @@ const TaskForm: React.FC = () => {
     );
   }
 
-  if (isLoading) {
-    return renderLoadingSpinner(palette);
-  }
+  // if (isLoading) {
+  //   return renderLoadingSpinner(palette);
+  // }
 
   return (
     <Layout>
@@ -489,6 +495,8 @@ const TaskForm: React.FC = () => {
           <ButtonText>
             {isLoading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Task'}
           </ButtonText>
+            {isLoading && <View style={styles.ActivityIndicator}><ActivityIndicator size="small" color={palette.common.white} /></View>}
+
         </SubmitButton>
 
         {isEditMode && (
@@ -509,5 +517,12 @@ const TaskForm: React.FC = () => {
     </Layout>
   );
 };
+
+const styles = StyleSheet.create({
+  ActivityIndicator: {
+    position: 'absolute',
+    right: themeUtils.WP(5),
+  },
+});
 
 export default TaskForm;

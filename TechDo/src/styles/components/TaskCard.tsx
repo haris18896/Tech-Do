@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Animated } from 'react-native';
 interface ThemeProps {
   theme: {
     DefaultPalette: () => any;
+    WP: (size: number) => number;
   };
 }
 
@@ -15,7 +16,12 @@ interface ModalButtonProps extends ThemeProps {
   variant?: 'default' | 'danger';
 }
 
-export const CardContainer = styled(Animated.View)<CompletedProps>`
+interface PriorityProps extends ThemeProps {
+  priority?: 'low' | 'medium' | 'high';
+  color?: string;
+}
+
+export const CardContainer = styled(Animated.View)<CompletedProps & PriorityProps>`
   flex-direction: row;
   align-items: center;
   padding: ${props => props.theme.WP(4)}px;
@@ -23,9 +29,13 @@ export const CardContainer = styled(Animated.View)<CompletedProps>`
   margin-vertical: ${props => props.theme.WP(2)}px;
   border-radius: 12px;
   border-left-width: 4px;
-  border-left-color: ${props => props.completed ?
-    props.theme.DefaultPalette().success.main :
-    props.theme.DefaultPalette().primary.main};
+  border-left-color: ${props => {
+    if (props.completed) return props.theme.DefaultPalette().success.main;
+    if (props.priority === 'high') return props.theme.DefaultPalette().error.main;
+    if (props.priority === 'medium') return props.theme.DefaultPalette().warning.main;
+    if (props.priority === 'low') return props.theme.DefaultPalette().success.main;
+    return props.theme.DefaultPalette().primary.main;
+  }};
   background-color: ${props => props.theme.DefaultPalette().background.card};
   elevation: 4;
   shadow-color: #000;
@@ -67,12 +77,37 @@ export const TaskTitle = styled(Text)<CompletedProps>`
   opacity: ${props => props.completed ? 0.7 : 1};
 `;
 
+export const TaskInfoRow = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
 export const TaskStatus = styled(Text)<CompletedProps>`
   font-size: ${props => props.theme.WP(3)}px;
   font-weight: 500;
   color: ${props => props.completed ?
     props.theme.DefaultPalette().success.main :
     props.theme.DefaultPalette().primary.main};
+`;
+
+export const PriorityBadge = styled(View)<PriorityProps>`
+  flex-direction: row;
+  align-items: center;
+  background-color: ${props => props.color ? `${props.color}10` : 'transparent'};
+  padding-horizontal: ${props => props.theme.WP(2)}px;
+  padding-vertical: ${props => props.theme.WP(0.5)}px;
+  border-radius: ${props => props.theme.WP(4)}px;
+  border-width: 1px;
+  border-color: ${props => props.color ? `${props.color}40` : 'transparent'};
+`;
+
+export const PriorityText = styled(Text)<PriorityProps>`
+  font-size: ${props => props.theme.WP(2.5)}px;
+  font-weight: 600;
+  color: ${props => props.color || props.theme.DefaultPalette().text.secondary};
+  margin-left: ${props => props.theme.WP(1)}px;
 `;
 
 export const ActionsContainer = styled(View)`

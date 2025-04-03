@@ -60,14 +60,58 @@ export const getTasksByCategory = async (userId: string, category?: 'daily' | 'w
       } as Task;
     });
   } catch (error: any) {
-    console.log('error : ', JSON.stringify(error));
+    console.log('Error fetching tasks:', error.message, error.code);
     showToast({
       type: 'error',
       title: 'Error',
       message: error.message || 'Failed to fetch tasks',
     });
-    throw error;
+    throw new Error(`Error fetching tasks: ${error.message || 'Unknown error'}`);
   }
+};
+
+// Subscribe to task changes in real-time
+export const subscribeToTasks = (
+  userId: string,
+  category: 'daily' | 'weekly' | 'monthly' | undefined,
+  onUpdate: (tasks: Task[]) => void
+) => {
+  let query = firestore().collection('tasks').where('userId', '==', userId);
+
+  if (category) {
+    query = query.where('category', '==', category);
+  }
+
+  query = query.orderBy('createdAt', 'desc');
+
+  return query.onSnapshot(
+    (snapshot) => {
+      const tasks: Task[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          description: data.description || '',
+          completed: data.completed,
+          createdAt: data.createdAt?.toMillis() || Date.now(),
+          updatedAt: data.updatedAt?.toMillis() || Date.now(),
+          dueDate: data.dueDate,
+          priority: data.priority,
+          category: data.category,
+          userId: data.userId,
+        } as Task;
+      });
+      onUpdate(tasks);
+    },
+    (error) => {
+      console.error('Error subscribing to tasks:', error);
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: error.message || 'Failed to listen to task updates',
+      });
+    }
+  );
 };
 
 // Update a task

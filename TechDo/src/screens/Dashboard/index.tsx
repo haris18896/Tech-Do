@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StatusBar, View } from 'react-native';
 
 // ** Third Party Packages
@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { theme as themeUtils } from '../../@core/infrustructure/theme';
 import { Task } from '../../utils/constants';
 import { useAuth } from '../../@core/infrustructure/context/AuthContext';
-import { getTasksByCategory } from '../../@core/auth/TaskService';
+import { subscribeToTasks } from '../../@core/auth/TaskService';
 import { handleToggleComplete, handleDeleteTask, renderEmptyState, renderLoadingSpinner } from '../../utils/utils';
 
 // ** Custom Components
@@ -32,6 +32,7 @@ import ProgressSummary from '../../components/ProgressSummary';
 const Dashboard: React.FC = () => {
   const { palette } = useAppTheme();
   const { user } = useAuth();
+  const isMounted = useRef(true);
 
   const navigation = useNavigation();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -42,42 +43,112 @@ const Dashboard: React.FC = () => {
     monthly: { total: 0, completed: 0 },
   });
 
-  const fetchTasks = useCallback(async () => {
+  // Refs to store unsubscribe functions
+  const unsubscribersRef = useRef<(() => void)[]>([]);
+
+  // Set up real-time listeners for tasks
+  useEffect(() => {
     if (!user) {return;}
 
     setIsLoading(true);
-    try {
-      const dailyTasks = await getTasksByCategory(user.uid, 'daily');
-      setTasks(dailyTasks);
 
-      const daily = await getTasksByCategory(user.uid, 'daily');
-      const weekly = await getTasksByCategory(user.uid, 'weekly');
-      const monthly = await getTasksByCategory(user.uid, 'monthly');
+    // Set up listeners for all task categories
+    const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', (dailyTasks) => {
+      if (isMounted.current) {
+        setTasks(dailyTasks); // Daily tasks are shown on dashboard
 
-      setCounts({
-        daily: {
-          total: daily.length,
-          completed: daily.filter(task => task.completed).length,
-        },
-        weekly: {
-          total: weekly.length,
-          completed: weekly.filter(task => task.completed).length,
-        },
-        monthly: {
-          total: monthly.length,
-          completed: monthly.filter(task => task.completed).length,
-        },
+        // Update counts for daily tasks
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          daily: {
+            total: dailyTasks.length,
+            completed: dailyTasks.filter(task => task.completed).length,
+          },
+        }));
+      }
+    });
+
+    const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', (weeklyTasks) => {
+      if (isMounted.current) {
+        // Update counts for weekly tasks
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          weekly: {
+            total: weeklyTasks.length,
+            completed: weeklyTasks.filter(task => task.completed).length,
+          },
+        }));
+      }
+    });
+
+    const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', (monthlyTasks) => {
+      if (isMounted.current) {
+        // Update counts for monthly tasks
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          monthly: {
+            total: monthlyTasks.length,
+            completed: monthlyTasks.filter(task => task.completed).length,
+          },
+        }));
+      }
+    });
+
+    // Store unsubscribe functions
+    unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+
+    // All listeners are set up, we can turn off the loading state
+    setIsLoading(false);
+
+    // Cleanup function to unsubscribe from listeners when component unmounts
+    return () => {
+      isMounted.current = false;
+      unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
+    };
+  }, [user]);
+
+  // Force refresh tasks (rarely needed with real-time updates, but kept for manual refresh functionality)
+  const refreshTasks = useCallback(() => {
+    // Only needed if subscriptions were somehow lost
+    if (unsubscribersRef.current.length === 0 && user) {
+      setIsLoading(true);
+
+      // Set up new listeners
+      const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', (dailyTasks) => {
+        setTasks(dailyTasks);
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          daily: {
+            total: dailyTasks.length,
+            completed: dailyTasks.filter(task => task.completed).length,
+          },
+        }));
       });
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    } finally {
+
+      const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', (weeklyTasks) => {
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          weekly: {
+            total: weeklyTasks.length,
+            completed: weeklyTasks.filter(task => task.completed).length,
+          },
+        }));
+      });
+
+      const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', (monthlyTasks) => {
+        setCounts(prevCounts => ({
+          ...prevCounts,
+          monthly: {
+            total: monthlyTasks.length,
+            completed: monthlyTasks.filter(task => task.completed).length,
+          },
+        }));
+      });
+
+      unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
       setIsLoading(false);
     }
   }, [user]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [user, fetchTasks]);
 
   const navigateToNewTask = () => {
     navigation.navigate('TaskForm');
@@ -142,15 +213,16 @@ const Dashboard: React.FC = () => {
             id={item.id}
             title={item.title}
             completed={item.completed}
-            onDelete={(id) => handleDeleteTask(id, tasks, setTasks, fetchTasks)}
+            priority={item.priority}
+            onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
             onToggleComplete={(id, completed) =>
-              handleToggleComplete(id, completed, tasks, setTasks, fetchTasks)}
+              handleToggleComplete(id, completed, tasks, setTasks, refreshTasks)}
           />
         )}
         keyExtractor={(item: Task) => item.id}
         ListEmptyComponent={() => renderEmptyState(palette, 'No Tasks Yet', 'Tap the + button to add your first task')}
         showsVerticalScrollIndicator={false}
-        onRefresh={fetchTasks}
+        onRefresh={refreshTasks}
         refreshing={isLoading}
       />
 

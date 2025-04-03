@@ -27,12 +27,16 @@ import {
   ModalContainer,
   CompletionCircle,
   ActionsContainer,
+  PriorityBadge,
+  PriorityText,
+  TaskInfoRow,
 } from '../styles/components/TaskCard';
 
 interface TaskCardProps {
   id: string;
   title: string;
   completed: boolean;
+  priority: 'low' | 'medium' | 'high';
   onDelete: (id: string) => void;
   onToggleComplete: (id: string, completed: boolean) => void;
 }
@@ -83,10 +87,41 @@ const DeleteConfirmModal: React.FC<DeleteModalProps> = ({
   );
 };
 
+// Helper function to get priority icon and color
+const getPriorityInfo = (priority: 'low' | 'medium' | 'high', palette: any) => {
+  switch (priority) {
+    case 'high':
+      return {
+        icon: 'flag',
+        color: palette.error.main,
+        label: 'High',
+      };
+    case 'medium':
+      return {
+        icon: 'flag',
+        color: palette.warning.main,
+        label: 'Medium',
+      };
+    case 'low':
+      return {
+        icon: 'flag',
+        color: palette.success.main,
+        label: 'Low',
+      };
+    default:
+      return {
+        icon: 'flag-outline',
+        color: palette.text.secondary,
+        label: 'None',
+      };
+  }
+};
+
 const TaskCard: React.FC<TaskCardProps> = ({
   id,
   title,
   completed,
+  priority,
   onDelete,
   onToggleComplete,
 }) => {
@@ -95,6 +130,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
   // @ts-ignore
   const navigation = useNavigation();
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
+
+  // Get priority details based on the priority level
+  const priorityInfo = getPriorityInfo(priority, palette);
 
   const handlePress = () => {
     Animated.sequence([
@@ -129,6 +167,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       <CardContainer
         style={{ transform: [{ scale: scaleAnim }] }}
         completed={completed}
+        priority={priority}
       >
         <CompletionCircle onPress={handlePress}>
           <CheckCircle completed={completed}>
@@ -143,9 +182,16 @@ const TaskCard: React.FC<TaskCardProps> = ({
             {title}
           </TaskTitle>
 
-          <TaskStatus completed={completed}>
-            {completed ? 'Completed' : 'In Progress'}
-          </TaskStatus>
+          <TaskInfoRow>
+            <TaskStatus completed={completed}>
+              {completed ? 'Completed' : 'In Progress'}
+            </TaskStatus>
+
+            <PriorityBadge color={priorityInfo.color}>
+              <Icon name={priorityInfo.icon} size={themeUtils.WP(3)} color={priorityInfo.color} />
+              <PriorityText color={priorityInfo.color}>{priorityInfo.label}</PriorityText>
+            </PriorityBadge>
+          </TaskInfoRow>
         </TaskContent>
 
         <ActionsContainer>
