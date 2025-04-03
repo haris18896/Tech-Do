@@ -157,6 +157,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
     navigation.navigate('TaskForm', { taskId: id });
   };
 
+  console.log('Navigating to edit task with ID:', id);
+
   const confirmDelete = () => {
     setDeleteModalVisible(false);
     onDelete(id);

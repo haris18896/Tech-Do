@@ -35,6 +35,7 @@ import {ProfileImageWrapper} from '../../styles/screens/Profile';
 
 // ** SVGs
 import {LogoutIcon, appImages} from '../../assets';
+import { useAuth } from '../../@core/infrustructure/context/AuthContext';
 
 // ** Type definitions
 interface MenuItem {
@@ -58,6 +59,8 @@ interface SideMenuProps {
 const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
   // ** Theme
   const {palette} = useAppTheme();
+
+  const { user } = useAuth();
 
   const onClose = (): void => {
     navigation.dispatch(DrawerActions.closeDrawer());
@@ -148,10 +151,10 @@ const SideMenu: React.FC<SideMenuProps> = ({state, navigation}) => {
 
           <UserDetailWrapper>
             <TextItem weight={'semiBold'} size={4} color={palette.text.title}>
-              Haris Ahmad
+              {user?.displayName}
             </TextItem>
             <TextItem weight={'semiBold'} size={3.5} color={palette.text.body}>
-              haris18896@gmail.com
+              {user?.email}
             </TextItem>
           </UserDetailWrapper>
         </DrawerAvatarContainer>
