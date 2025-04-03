@@ -11,22 +11,18 @@ import {useColorScheme} from 'react-native';
 import useJwt from '../../auth/useJwt';
 import {showToast} from '../../../utils/utils';
 
-// ** Define Theme Type
 type ThemeType = 'dark' | 'light';
 
-// ** Define Context Type
 interface ThemeContextType {
   theme: ThemeType;
   toggleTheme: () => Promise<void>;
   isDarkMode: boolean;
 }
 
-// ** Define Provider Props
 interface ThemeToggleProviderProps {
   children: ReactNode;
 }
 
-// Create a context for the theme
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined,
 );

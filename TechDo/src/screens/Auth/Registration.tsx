@@ -22,6 +22,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {isObjEmpty} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import { useAuth } from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {AuthContainer, UserActivityWrapper} from '../../styles/screens/Auth';
@@ -35,6 +36,7 @@ import {appImages} from '../../assets';
 type AuthStackParamList = {
   Login: undefined;
   Registration: undefined;
+  App: undefined;
 };
 
 YupPassword(Yup);
@@ -51,6 +53,7 @@ const Registration: React.FC = () => {
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const { signUp } = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<String>('');
@@ -88,8 +91,17 @@ const Registration: React.FC = () => {
     onSubmit: async values => {
       if (isObjEmpty(formik.errors)) {
         setIsLoading('registration_pending');
+
+        try {
+          await signUp(values.email, values.password, values.name);
+
+          navigation.navigate('App');
+        } catch (error) {
+          console.error('Registration error:', error);
+        } finally {
+          setIsLoading('');
+        }
       }
-      console.log(values);
     },
   });
 

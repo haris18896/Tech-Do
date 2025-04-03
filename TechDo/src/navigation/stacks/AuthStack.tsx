@@ -8,7 +8,6 @@ import {
 import Login from '../../screens/Auth/Login';
 import Registration from '../../screens/Auth/Registration';
 
-// Define the param list for this stack
 export type AuthStackParamList = {
   Login: undefined;
   Registration: undefined;

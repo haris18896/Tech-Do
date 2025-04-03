@@ -10,6 +10,7 @@ import {
 // ** Utils
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {PageCenter, TextItem} from '../../styles/infrustucture';
@@ -18,10 +19,9 @@ import {PageCenter, TextItem} from '../../styles/infrustucture';
 import {appImages} from '../../assets';
 
 // ** Third Party
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, CommonActions} from '@react-navigation/native';
 
-// ** Types
 interface Palette {
   background: {
     paper: string;
@@ -63,24 +63,57 @@ const Splash: React.FC = () => {
   // ** Theme
   const {palette} = useAppTheme();
 
+  // ** Auth
+  const {user, loading} = useAuth();
+
   useEffect(() => {
-    const timer = setTimeout(async () => {
+    if (loading) {return;}
+
+    const checkAuthState = async () => {
       try {
-        // const isLoggedIn = await AsyncStorage.getItem('token');
-        // const initialRouteName = isLoggedIn ? 'App' : 'Auth';
+        if (user) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'App'}],
+            }),
+          );
+        } else {
+          const storedUserId = await AsyncStorage.getItem('userId');
+
+          if (storedUserId) {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'App'}],
+              }),
+            );
+          } else {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Auth'}],
+              }),
+            );
+          }
+        }
+      } catch (error) {
+        console.error('Error checking authentication state:', error);
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{name: 'App'}],
+            routes: [{name: 'Auth'}],
           }),
         );
-      } catch (error) {
-        console.error('Error retrieving token:', error);
       }
-    }, 3000);
+    };
+
+    const timer = setTimeout(() => {
+      checkAuthState();
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, user, loading]);
 
   return (
     <View

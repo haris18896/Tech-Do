@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 
 // ** Third Party Packages
@@ -20,6 +21,7 @@ import {isObjEmpty, showToast} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useTheme} from '../../@core/infrustructure/context/ThemeContext';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import {useAuth} from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {ButtonAction} from '../../components';
@@ -48,6 +50,7 @@ const Profile: React.FC = () => {
   const {palette} = useAppTheme();
   const navigation = useNavigation();
   const {theme, toggleTheme} = useTheme();
+  const {user, logout} = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,10 +63,9 @@ const Profile: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      email: '',
+      name: user?.displayName || '',
+      email: user?.email || '',
       contactNumber: '',
-      // formatUSAPhoneNumber(userMe?.value?.result?.contactNumber) || '',
     },
     enableReinitialize: true,
     validationSchema: schema,
@@ -80,6 +82,33 @@ const Profile: React.FC = () => {
       }
     },
   });
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout Confirmation',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              // @ts-ignore
+              navigation.navigate('Auth', { screen: 'Login' });
+            } catch (error) {
+              console.error('Logout error:', error);
+            }
+          },
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   return (
     <View
@@ -113,7 +142,7 @@ const Profile: React.FC = () => {
                 family={'semiBold'}
                 size={5}
                 color={palette.text?.title}>
-                Haris Ahmad
+                {user?.displayName || 'User'}
               </TextItem>
 
               <TextItem
@@ -121,9 +150,8 @@ const Profile: React.FC = () => {
                 family={'semiBold'}
                 size={4}
                 color={palette.grey[500]}
-                // color={userMe?.role ? palette.text?.body : palette.grey[500]}
               >
-                Developer
+                {user?.email || 'No email provided'}
               </TextItem>
             </ColumCenter>
           </Card>
@@ -146,7 +174,7 @@ const Profile: React.FC = () => {
                     size={themeUtils.WP(5)}
                     color={palette.secondary?.main}
                   />
-                  <TextItem>+923456789012</TextItem>
+                  <TextItem>Phone number</TextItem>
                 </RowStart>
 
                 <RowStart>
@@ -156,7 +184,7 @@ const Profile: React.FC = () => {
                     size={themeUtils.WP(5)}
                     color={palette.secondary?.main}
                   />
-                  <TextItem>haris18896@gmail.com</TextItem>
+                  <TextItem>{user?.email || 'No email provided'}</TextItem>
                 </RowStart>
               </Card>
             </CardWrapper>
@@ -192,7 +220,7 @@ const Profile: React.FC = () => {
                 />
 
                 <TextInput
-                  disabled={false}
+                  disabled={true} // Email can't be changed in Firebase without re-authentication
                   ref={email_ref}
                   multiline={false}
                   leftIcon={'email'}
@@ -273,6 +301,18 @@ const Profile: React.FC = () => {
             labelColor={palette.common.white}
             loadingColor={palette.common.white}
             disabled={!isObjEmpty(formik.errors) || isLoading}
+          />
+
+          <ButtonAction
+            end={true}
+            title={'Logout'}
+            titleWeight={'bold'}
+            loading={false}
+            onPress={handleLogout}
+            border={palette.error?.main}
+            color={palette.error?.main}
+            labelColor={palette.common.white}
+            loadingColor={palette.common.white}
           />
         </UserActivityWrapper>
       </ProfileContainer>

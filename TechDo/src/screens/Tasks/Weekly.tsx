@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils
-import { weeklyTasks, Task } from '../../utils/constants';
+import { Task } from '../../utils/constants';
 import { theme as themeUtils } from '../../@core/infrustructure/theme';
 import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
+import { TaskContext } from './TaskTabs';
+import { handleToggleComplete, handleDeleteTask, renderEmptyState, renderLoadingSpinner } from '../../utils/utils';
 
 // ** Custom Components
 import TaskCard from '../../components/TaskCard';
@@ -16,49 +17,26 @@ import {
   SectionHeader,
   SectionTitle,
   TaskCount,
-  EmptyStateContainer,
-  EmptyStateTitle,
-  EmptyStateSubtitle,
 } from '../../styles/screens/Dashboard';
 
 const Weekly: React.FC = () => {
   const { palette } = useAppTheme();
-  const [tasks, setTasks] = useState<Task[]>(weeklyTasks);
+  const { weeklyTasks, refreshTasks, isLoading } = useContext(TaskContext);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  // Handle task completion toggle
-  const handleToggleComplete = (id: string, completed: boolean) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === id ? { ...task, completed, updatedAt: new Date().getTime() } : task
-    );
-    setTasks(updatedTasks);
-  };
-
-  // Handle task deletion
-  const handleDeleteTask = (id: string) => {
-    const updatedTasks = tasks.filter(task => task.id !== id);
-    setTasks(updatedTasks);
-  };
-
-  // Render empty state when no tasks are available
-  const renderEmptyState = () => (
-    <EmptyStateContainer>
-      <Icon
-        name="checkbox-blank-circle-outline"
-        size={themeUtils.WP(20)}
-        color={palette.grey[300]}
-      />
-      <EmptyStateTitle>
-        No Weekly Tasks Yet
-      </EmptyStateTitle>
-      <EmptyStateSubtitle>
-        Tap the + button to add a weekly task
-      </EmptyStateSubtitle>
-    </EmptyStateContainer>
-  );
+  // Update local tasks state when weeklyTasks from context changes
+  useEffect(() => {
+    setTasks(weeklyTasks);
+  }, [weeklyTasks]);
 
   // Calculate task completion stats
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.completed).length;
+
+  // Render a loading state when tasks are being fetched
+  if (isLoading && tasks.length === 0) {
+    return renderLoadingSpinner(palette);
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.background.paper, paddingTop: themeUtils.WP(4) }}>
@@ -78,12 +56,13 @@ const Weekly: React.FC = () => {
             id={item.id}
             title={item.title}
             completed={item.completed}
-            onDelete={handleDeleteTask}
-            onToggleComplete={handleToggleComplete}
+            onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
+            onToggleComplete={(id, completed) =>
+              handleToggleComplete(id, completed, tasks, setTasks, refreshTasks)}
           />
         )}
         keyExtractor={(item: Task) => item.id}
-        ListEmptyComponent={renderEmptyState}
+        ListEmptyComponent={() => renderEmptyState(palette, 'No Weekly Tasks Yet', 'Tap the + button to add a weekly task')}
         showsVerticalScrollIndicator={false}
       />
     </View>

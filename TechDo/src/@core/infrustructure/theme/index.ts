@@ -14,7 +14,6 @@ import DefaultPalette, {Palette} from './colors';
 
 export type RF = (size: number) => number;
 
-// Interface for theme object
 export interface ThemeType {
   WP: (widthPercent: number | string) => number;
   HP: (heightPercent: number | string) => number;

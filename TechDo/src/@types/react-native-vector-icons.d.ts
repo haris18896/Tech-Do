@@ -3,19 +3,8 @@ declare module 'react-native-vector-icons/MaterialCommunityIcons' {
   import { ImageSourcePropType, TextProps } from 'react-native';
 
   interface IconProps extends TextProps {
-    /**
-     * Size of the icon, can also be passed as fontSize in the style object.
-     */
     size?: number;
-
-    /**
-     * Name of the icon to show
-     */
     name: string;
-
-    /**
-     * Color of the icon
-     */
     color?: string;
   }
 
@@ -26,4 +15,4 @@ declare module 'react-native-vector-icons/MaterialCommunityIcons' {
       color?: string
     ): Promise<ImageSourcePropType>;
   }
-} 
+}

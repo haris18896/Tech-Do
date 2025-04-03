@@ -10,19 +10,22 @@ import {PaperProvider} from 'react-native-paper';
 
 // ** Custom Packages
 import MainStack from './navigation';
+import {AuthProvider} from './@core/infrustructure/context/AuthContext';
 import {ThemeProvider} from './@core/infrustructure/theme/ThemeProvider';
 import {ThemeToggleProvider} from './@core/infrustructure/context/ThemeContext';
 
 const App: FC = () => {
   return (
-    <ThemeToggleProvider>
-      <ThemeProvider>
-        <PaperProvider>
-          <MainStack />
-          <Toast />
-        </PaperProvider>
-      </ThemeProvider>
-    </ThemeToggleProvider>
+    <AuthProvider>
+      <ThemeToggleProvider>
+        <ThemeProvider>
+          <PaperProvider>
+            <MainStack />
+            <Toast />
+          </PaperProvider>
+        </ThemeProvider>
+      </ThemeToggleProvider>
+    </AuthProvider>
   );
 };
 

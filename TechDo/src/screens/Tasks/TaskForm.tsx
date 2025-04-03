@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,7 +10,11 @@ import { useAppTheme } from '../../@core/infrustructure/theme/useAppTheme';
 import { theme as themeUtils } from '../../@core/infrustructure/theme';
 
 // ** Utils
-import { dailyTasks, weeklyTasks, monthlyTasks, Task } from '../../utils/constants';
+import { Task } from '../../utils/constants';
+import { useAuth } from '../../@core/infrustructure/context/AuthContext';
+import { createTask, updateTask, deleteTask } from '../../@core/auth/TaskService';
+import { TaskContext } from './TaskTabs';
+import { renderLoadingSpinner } from '../../utils/utils';
 
 // ** Styled Components
 import {
@@ -99,11 +103,12 @@ const TaskForm: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<any>();
   const { palette } = useAppTheme();
+  const { user } = useAuth();
+  const taskContext = useContext(TaskContext);
+  const { refreshTasks, dailyTasks, weeklyTasks, monthlyTasks } = taskContext;
 
   // Get taskId from route params
   const taskId = route.params?.taskId;
-
-  console.log('taskId from route params: ', taskId);
 
   // Determine if we're in edit mode
   const isEditMode = !!taskId;
@@ -120,11 +125,12 @@ const TaskForm: React.FC = () => {
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [taskNotFound, setTaskNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Find the task if in edit mode
   useEffect(() => {
     if (isEditMode) {
-        console.log('check if its running....');
+      // Get all tasks from the context
       const allTasks = [...dailyTasks, ...weeklyTasks, ...monthlyTasks];
       const foundTask = allTasks.find(t => t.id === taskId);
 
@@ -141,7 +147,7 @@ const TaskForm: React.FC = () => {
         setTaskNotFound(true);
       }
     }
-  }, [isEditMode, taskId]);
+  }, [isEditMode, taskId, dailyTasks, weeklyTasks, monthlyTasks]);
 
   // Format date for display
   const formatDate = (date: Date) => {
@@ -305,37 +311,63 @@ const TaskForm: React.FC = () => {
   };
 
   // Handle task save (either create or update)
-  const handleSaveTask = () => {
-    if (isEditMode && !task) {
-      return;
+  const handleSaveTask = async () => {
+    if (!user) {return;}
+    if (isEditMode && !task) {return;}
+
+    setIsLoading(true);
+
+    try {
+      const taskData = {
+        title,
+        description,
+        completed: isEditMode ? completed : false,
+        dueDate: dueDate.getTime(),
+        priority,
+        category,
+        userId: user.uid,
+      };
+
+      if (isEditMode && taskId) {
+        // Update existing task
+        await updateTask(taskId, taskData);
+      } else {
+        // Create new task
+        await createTask(taskData);
+      }
+
+      // Refresh tasks in the context
+      refreshTasks();
+
+      // Navigate back to dashboard
+      navigation.goBack();
+    } catch (error) {
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} task:`, error);
+    } finally {
+      setIsLoading(false);
     }
-
-    const taskData = {
-      id: isEditMode ? taskId : `task-${new Date().getTime()}`,
-      title,
-      description,
-      completed: isEditMode ? completed : false,
-      createdAt: isEditMode ? task!.createdAt : new Date().getTime(),
-      updatedAt: new Date().getTime(),
-      dueDate: dueDate.getTime(),
-      priority,
-      category,
-      userId: 'user123', // Replace with actual user ID in a real app
-    };
-
-    console.log(`${isEditMode ? 'Updating' : 'Creating'} task:`, taskData);
-
-    // Navigate back to dashboard
-    navigation.goBack();
   };
 
   // Handle task deletion (only in edit mode)
-  const handleDeleteTask = () => {
-    // In a real app, you would delete this from your database
-    console.log('Deleting task with ID:', taskId);
+  const handleDeleteTask = async () => {
+    if (!taskId) {return;}
 
-    // Navigate back to dashboard
-    navigation.goBack();
+    setIsLoading(true);
+
+    try {
+      // Delete task from Firestore
+      await deleteTask(taskId);
+
+      // Refresh tasks in the context
+      refreshTasks();
+
+      // Navigate back to dashboard
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Show task not found message if in edit mode and task wasn't found
@@ -354,11 +386,13 @@ const TaskForm: React.FC = () => {
     );
   }
 
+  if (isLoading) {
+    return renderLoadingSpinner(palette);
+  }
+
   return (
     <Layout>
         <SafeArea>
-
-
       <BarHeader
         showChat={{ badge: false, chat: false }}
         showNotification={{ notification: false, badge: false }}
@@ -478,29 +512,28 @@ const TaskForm: React.FC = () => {
               </OptionButton>
             </OptionContainer>
           </InputContainer>
-
         </Container>
       </ScrollView>
 
       <ActionContainer>
-            <SubmitButton onPress={handleSaveTask}>
-              <Icon
-                name={isEditMode ? 'content-save' : 'check'}
-                size={themeUtils.WP(5)}
-                color={palette.common.white}
-              />
-              <ButtonText>
-                {isEditMode ? 'Save Changes' : 'Create Task'}
-              </ButtonText>
-            </SubmitButton>
+        <SubmitButton onPress={handleSaveTask} disabled={isLoading}>
+          <Icon
+            name={isEditMode ? 'content-save' : 'check'}
+            size={themeUtils.WP(5)}
+            color={palette.common.white}
+          />
+          <ButtonText>
+            {isLoading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Task'}
+          </ButtonText>
+        </SubmitButton>
 
-            {/* Delete button - Only shown in edit mode */}
-            {isEditMode && (
-              <DeleteButton onPress={() => setDeleteModalVisible(true)}>
-                <Icon name="delete" size={themeUtils.WP(5)} color={palette.common.white} />
-              </DeleteButton>
-            )}
-          </ActionContainer>
+        {/* Delete button - Only shown in edit mode */}
+        {isEditMode && (
+          <DeleteButton onPress={() => setDeleteModalVisible(true)} disabled={isLoading}>
+            <Icon name="delete" size={themeUtils.WP(5)} color={palette.common.white} />
+          </DeleteButton>
+        )}
+      </ActionContainer>
 
       {/* Delete confirmation modal - Only used in edit mode */}
       {isEditMode && (

@@ -23,24 +23,18 @@ import Splash from '../screens/Splash';
 import {setTopLevelNavigator} from './utils';
 import {useTheme} from '../@core/infrustructure/context/ThemeContext';
 
-// Define root stack parameter list
 export type RootStackParamList = {
   Splash: undefined;
   App: undefined;
   Auth: undefined;
 };
 
-// Create the properly typed navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-/**
- * Main navigation stack component
- */
 const MainStack: React.FC = () => {
   // ** Theme
   const {theme} = useTheme();
 
-  // Create a custom theme with proper TypeScript typing
   const MyCustomTheme: Theme = {
     ...DefaultTheme,
     colors: {
@@ -49,7 +43,6 @@ const MainStack: React.FC = () => {
     },
   };
 
-  // Screen options with proper typing
   const screenOptions: NativeStackNavigationOptions = {
     headerShown: false,
     animation: 'fade',

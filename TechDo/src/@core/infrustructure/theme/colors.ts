@@ -1,7 +1,6 @@
 // Define the theme type
 type ThemeMode = 'dark' | 'light';
 
-// Define interfaces for each section of the palette
 interface CustomColors {
   dark: string;
   light: string;
@@ -105,7 +104,6 @@ interface InputColors {
   errorColor: string;
 }
 
-// Define the complete palette interface
 export interface Palette {
   customColors: CustomColors;
   common: CommonColors;
@@ -126,11 +124,9 @@ export interface Palette {
   input: InputColors;
 }
 
-// Define the color palettes
 const DefaultPalette = (theme: ThemeMode): Palette => {
   const isDark = theme === 'dark';
 
-  // Base Colors
   const whiteColor = '#FFF';
   const blackColor = '#000';
 
@@ -184,16 +180,16 @@ const DefaultPalette = (theme: ThemeMode): Palette => {
       dark: isDark ? '#00B6CC' : '#18828f',
     },
     grey: {
-      900: isDark ? '#FAFAFA' : '#161D31', // 50
-      800: isDark ? '#E0E0E0' : '#283046', // 100
-      700: isDark ? '#BDBDBD' : '#3B4253', // 200
-      600: isDark ? '#757575' : '#4C4E54', // 300
-      500: isDark ? '#9E9E9E' : '#7C7F86', // 400
-      400: isDark ? '#B4B7BD' : '#B4B7BD', // 500
-      300: isDark ? '#616161' : '#B4B7BD', // 600
-      200: isDark ? '#424242' : '#283046', // 700
-      100: isDark ? '#212121' : '#FAFAFA', // 800
-      50: isDark ? '#2F3E5D' : '#F5F5F5', // 900
+      900: isDark ? '#FAFAFA' : '#161D31',
+      800: isDark ? '#E0E0E0' : '#283046',
+      700: isDark ? '#BDBDBD' : '#3B4253',
+      600: isDark ? '#757575' : '#4C4E54',
+      500: isDark ? '#9E9E9E' : '#7C7F86',
+      400: isDark ? '#B4B7BD' : '#B4B7BD',
+      300: isDark ? '#616161' : '#B4B7BD',
+      200: isDark ? '#424242' : '#283046',
+      100: isDark ? '#212121' : '#FAFAFA',
+      50: isDark ? '#2F3E5D' : '#F5F5F5',
       A700: isDark ? '#616161' : '#4C4E54',
       A400: isDark ? '#BDBDBD' : '#B4B7BD',
       A200: isDark ? '#EEEEEE' : '#283046',

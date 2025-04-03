@@ -1,4 +1,4 @@
-// Define interfaces for font categories
+
 export interface Fonts {
   body: string;
   heading: string;

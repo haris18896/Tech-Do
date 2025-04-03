@@ -7,7 +7,6 @@ import {
 // ** Screens
 import {MyDrawer} from '../drawer/DrawerNavigation';
 
-// Define the param list for this stack
 export type AppStackParamList = {
   MyDrawer: undefined;
 };

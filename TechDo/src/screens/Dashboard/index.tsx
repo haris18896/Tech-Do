@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar, View } from 'react-native';
 
 // ** Third Party Packages
@@ -9,12 +9,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // ** Utils
 import { theme as themeUtils } from '../../@core/infrustructure/theme';
-import { dailyTasks, getTaskCounts, Task } from '../../utils/constants';
+import { Task } from '../../utils/constants';
+import { useAuth } from '../../@core/infrustructure/context/AuthContext';
+import { getTasksByCategory } from '../../@core/auth/TaskService';
+import { handleToggleComplete, handleDeleteTask, renderEmptyState, renderLoadingSpinner } from '../../utils/utils';
 
 // ** Custom Components
 import { BarHeader } from '../../@core/components';
 import { Layout } from '../../@core/layout';
-
 
 // Import our custom components
 import {
@@ -22,9 +24,6 @@ import {
   TasksList,
   SectionTitle,
   SectionHeader,
-  EmptyStateTitle,
-  EmptyStateSubtitle,
-  EmptyStateContainer,
   FloatingActionButton,
 } from '../../styles/screens/Dashboard';
 import TaskCard from '../../components/TaskCard';
@@ -32,54 +31,75 @@ import ProgressSummary from '../../components/ProgressSummary';
 
 const Dashboard: React.FC = () => {
   const { palette } = useAppTheme();
+  const { user } = useAuth();
 
   const navigation = useNavigation();
-  const [tasks, setTasks] = useState<Task[]>(dailyTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [counts, setCounts] = useState({
+    daily: { total: 0, completed: 0 },
+    weekly: { total: 0, completed: 0 },
+    monthly: { total: 0, completed: 0 },
+  });
 
-  // Get task counts for progress calculations
-  const counts = getTaskCounts();
+  const fetchTasks = useCallback(async () => {
+    if (!user) {return;}
 
-  // Handle task completion toggle
-  const handleToggleComplete = (id: string, completed: boolean) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === id ? { ...task, completed, updatedAt: new Date().getTime() } : task
-    );
-    setTasks(updatedTasks);
+    setIsLoading(true);
+    try {
+      const dailyTasks = await getTasksByCategory(user.uid, 'daily');
+      setTasks(dailyTasks);
 
-    // In a real app, you would update this in your database
-    // For now, we're just updating the state
-  };
+      const daily = await getTasksByCategory(user.uid, 'daily');
+      const weekly = await getTasksByCategory(user.uid, 'weekly');
+      const monthly = await getTasksByCategory(user.uid, 'monthly');
 
-  // Handle task deletion
-  const handleDeleteTask = (id: string) => {
-    const updatedTasks = tasks.filter(task => task.id !== id);
-    setTasks(updatedTasks);
+      setCounts({
+        daily: {
+          total: daily.length,
+          completed: daily.filter(task => task.completed).length,
+        },
+        weekly: {
+          total: weekly.length,
+          completed: weekly.filter(task => task.completed).length,
+        },
+        monthly: {
+          total: monthly.length,
+          completed: monthly.filter(task => task.completed).length,
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
 
-    // In a real app, you would delete this from your database
-    // For now, we're just updating the state
-  };
+  useEffect(() => {
+    fetchTasks();
+  }, [user, fetchTasks]);
 
-  // Navigate to task form screen for new task
   const navigateToNewTask = () => {
     navigation.navigate('TaskForm');
   };
 
-  // Render empty state when no tasks are available
-  const renderEmptyState = () => (
-    <EmptyStateContainer>
-      <Icon
-        name="checkbox-blank-circle-outline"
-        size={themeUtils.WP(20)}
-        color={palette.grey[300]}
-      />
-      <EmptyStateTitle>
-        No Tasks Yet
-      </EmptyStateTitle>
-      <EmptyStateSubtitle>
-        Tap the + button to add your first task
-      </EmptyStateSubtitle>
-    </EmptyStateContainer>
-  );
+  // Render a loading state while fetching tasks
+  if (isLoading && tasks.length === 0) {
+    return (
+      <Layout>
+        <StatusBar
+          backgroundColor={palette.primary.main}
+          barStyle="light-content"
+        />
+        <BarHeader
+          showChat={{ badge: false, chat: false }}
+          showNotification={{ notification: false, badge: false }}
+          onPressBar={() => navigation.dispatch(DrawerActions.openDrawer())}
+        />
+        {renderLoadingSpinner(palette)}
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -122,13 +142,16 @@ const Dashboard: React.FC = () => {
             id={item.id}
             title={item.title}
             completed={item.completed}
-            onDelete={handleDeleteTask}
-            onToggleComplete={handleToggleComplete}
+            onDelete={(id) => handleDeleteTask(id, tasks, setTasks, fetchTasks)}
+            onToggleComplete={(id, completed) =>
+              handleToggleComplete(id, completed, tasks, setTasks, fetchTasks)}
           />
         )}
         keyExtractor={(item: Task) => item.id}
-        ListEmptyComponent={renderEmptyState}
+        ListEmptyComponent={() => renderEmptyState(palette, 'No Tasks Yet', 'Tap the + button to add your first task')}
         showsVerticalScrollIndicator={false}
+        onRefresh={fetchTasks}
+        refreshing={isLoading}
       />
 
       <FloatingActionButton onPress={navigateToNewTask}>

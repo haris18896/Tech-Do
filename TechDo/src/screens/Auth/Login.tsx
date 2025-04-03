@@ -22,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {isObjEmpty} from '../../utils/utils';
 import {theme as themeUtils} from '../../@core/infrustructure/theme';
 import {useAppTheme} from '../../@core/infrustructure/theme/useAppTheme';
+import { useAuth } from '../../@core/infrustructure/context/AuthContext';
 
 // ** Custom Components
 import {
@@ -51,6 +52,7 @@ const Login = () => {
   const {palette} = useAppTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const { signIn, user } = useAuth();
 
   // ** States
   const [isLoading, setIsLoading] = useState<String>('');
@@ -86,10 +88,24 @@ const Login = () => {
     onSubmit: async values => {
       if (isObjEmpty(formik.errors)) {
         setIsLoading('login_pending');
-      }
 
-      if (rememberMe === 'checked') {
-        await AsyncStorage.setItem('login_creds', JSON.stringify(values));
+        try {
+          await signIn(values.email, values.password);
+
+          if (rememberMe === 'checked') {
+            await AsyncStorage.setItem('login_creds', JSON.stringify(values));
+          }
+
+          if (user) {
+            await AsyncStorage.setItem('userId', user.uid);
+          }
+
+          navigation.navigate('App');
+        } catch (error) {
+          console.error('Login error:', error);
+        } finally {
+          setIsLoading('');
+        }
       }
     },
   });
@@ -218,8 +234,7 @@ const Login = () => {
                   titleWeight={'bold'}
                   border={'transparent'}
                   loading={isLoading === 'login_pending'}
-                  // onPress={() => formik.handleSubmit()}
-                  onPress={() => navigation.navigate('App')}
+                  onPress={() => formik.handleSubmit()}
                   color={palette?.primary?.main}
                   labelColor={palette?.common?.white}
                   loadingColor={palette?.common?.white}
