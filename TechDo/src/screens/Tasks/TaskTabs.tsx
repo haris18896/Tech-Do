@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -88,15 +87,56 @@ const TaskTabs: React.FC = () => {
     };
   }, [user]);
 
-  const refreshTasks = () => {
-    if (unsubscribersRef.current.length === 0 && user) {
+  const refreshTasks = async () => {
+    console.log('Refreshing tasks...');
+
+    // Always clean up existing subscriptions first
+    if (unsubscribersRef.current.length > 0) {
+      console.log('Cleaning up existing subscriptions');
       unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
+      unsubscribersRef.current = [];
+    }
 
-      const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', setDailyTasks);
-      const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', setWeeklyTasks);
-      const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', setMonthlyTasks);
+    if (user) {
+      console.log('Setting up new task subscriptions');
+      setIsLoading(true);
 
-      unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+      // Set up new listeners
+      return new Promise<void>((resolve) => {
+        let pendingSubscriptions = 3; // Three task types
+
+        // Helper to track when all subscriptions are complete
+        const subscriptionComplete = () => {
+          pendingSubscriptions--;
+          if (pendingSubscriptions <= 0) {
+            setIsLoading(false);
+            resolve();
+          }
+        };
+
+        const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', tasks => {
+          console.log(`Received ${tasks.length} daily tasks`);
+          setDailyTasks(tasks);
+          subscriptionComplete();
+        });
+
+        const weeklyUnsubscribe = subscribeToTasks(user.uid, 'weekly', tasks => {
+          console.log(`Received ${tasks.length} weekly tasks`);
+          setWeeklyTasks(tasks);
+          subscriptionComplete();
+        });
+
+        const monthlyUnsubscribe = subscribeToTasks(user.uid, 'monthly', tasks => {
+          console.log(`Received ${tasks.length} monthly tasks`);
+          setMonthlyTasks(tasks);
+          subscriptionComplete();
+        });
+
+        unsubscribersRef.current = [dailyUnsubscribe, weeklyUnsubscribe, monthlyUnsubscribe];
+      });
+    } else {
+      console.log('No user available for refreshing tasks');
+      return Promise.resolve();
     }
   };
 

@@ -55,6 +55,7 @@ const Weekly: React.FC = () => {
           <TaskCard
             id={item.id}
             title={item.title}
+            category={item.category}
             completed={item.completed}
             priority={item.priority}
             onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}

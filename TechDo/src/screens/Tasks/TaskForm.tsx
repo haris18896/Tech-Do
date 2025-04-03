@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ScrollView, View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,7 +15,7 @@ import { Task } from '../../utils/constants';
 
 // ** Store && Actions
 import { useAuth } from '../../@core/infrustructure/context/AuthContext';
-import { createTask, updateTask, deleteTask } from '../../@core/auth/TaskService';
+import { createTask, updateTask, deleteTask, subscribeToTasks } from '../../@core/auth/TaskService';
 
 // ** Styled Components
 import {
@@ -106,9 +106,10 @@ const TaskForm: React.FC = () => {
   const { palette } = useAppTheme();
   const { user } = useAuth();
   const taskContext = useContext(TaskContext);
-  const { refreshTasks, dailyTasks, weeklyTasks, monthlyTasks } = taskContext;
+  const { refreshTasks } = taskContext;
 
   const taskId = route.params?.taskId;
+  const _category = route.params?.category || 'daily';
   const isEditMode = !!taskId;
 
   // Task state
@@ -118,33 +119,65 @@ const TaskForm: React.FC = () => {
   const [dueDate, setDueDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
-  const [category, setCategory] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [category, setCategory] = useState<'daily' | 'weekly' | 'monthly'>(_category as 'daily' | 'weekly' | 'monthly');
   const [completed, setCompleted] = useState(false);
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [taskNotFound, setTaskNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formTasks, setFormTasks] = useState<Task[]>([]);
 
-  // Find the task if in edit mode
+  // Store unsubscribe function
+  const unsubscribeRef = useRef<(() => void) | null>(null);
+
+  // Set up subscription to tasks based on _category
   useEffect(() => {
-    if (isEditMode) {
-      const allTasks = [...dailyTasks, ...weeklyTasks, ...monthlyTasks];
-      const foundTask = allTasks.find(t => t.id === taskId);
+    if (!user) {return;}
+
+    // Clean up any existing subscription
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
+
+    // Subscribe to tasks of the specified category
+    const unsubscribe = subscribeToTasks(user.uid, _category as 'daily' | 'weekly' | 'monthly', (tasks) => {
+      setFormTasks(tasks);
+    });
+
+    unsubscribeRef.current = unsubscribe;
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
+    };
+  }, [user, _category]);
+
+  // Find task by ID after tasks are loaded
+  useEffect(() => {
+    if (isEditMode && taskId && formTasks.length > 0) {
+      console.log(`[TaskForm] Looking for task with ID: ${taskId} in ${formTasks.length} ${_category} tasks`);
+
+      const foundTask = formTasks.find((t) => t.id === taskId);
 
       if (foundTask) {
+        console.log(`[TaskForm] Found task: ${foundTask.title}`);
         setTask(foundTask);
         setTitle(foundTask.title);
         setDescription(foundTask.description || '');
         setDueDate(foundTask.dueDate ? new Date(foundTask.dueDate) : new Date());
         setCalendarDate(foundTask.dueDate ? new Date(foundTask.dueDate) : new Date());
-        setPriority(foundTask.priority);
-        setCategory(foundTask.category);
+        setPriority(foundTask.priority || 'medium');
+        setCategory(foundTask.category || 'daily');
         setCompleted(foundTask.completed);
+        setTaskNotFound(false);
       } else {
+        console.log('[TaskForm] Task not found in category tasks');
         setTaskNotFound(true);
       }
     }
-  }, [isEditMode, taskId, dailyTasks, weeklyTasks, monthlyTasks]);
+  }, [isEditMode, taskId, formTasks, _category]);
 
   // Format date for display
   const formatDate = (date: Date) => {
@@ -305,6 +338,7 @@ const TaskForm: React.FC = () => {
 
       if (isEditMode && taskId) {
         await updateTask(taskId, taskData);
+        navigation.goBack();
       } else {
         await createTask(taskData);
         refreshTasks();

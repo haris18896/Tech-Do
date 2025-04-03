@@ -36,6 +36,7 @@ interface TaskCardProps {
   id: string;
   title: string;
   completed: boolean;
+  category: 'daily' | 'weekly' | 'monthly';
   priority: 'low' | 'medium' | 'high';
   onDelete: (id: string) => void;
   onToggleComplete: (id: string, completed: boolean) => void;
@@ -122,6 +123,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   title,
   completed,
   priority,
+  category,
   onDelete,
   onToggleComplete,
 }) => {
@@ -154,7 +156,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const handleEdit = () => {
     // Navigate to task form with the taskId parameter for edit mode
     console.log('Navigating to edit task with ID:', id);
-    navigation.navigate('TaskForm', { taskId: id });
+    navigation.navigate('TaskForm', { taskId: id, category: category });
   };
 
   console.log('Navigating to edit task with ID:', id);

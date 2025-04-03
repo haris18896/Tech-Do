@@ -107,13 +107,9 @@ const Dashboard: React.FC = () => {
     };
   }, [user]);
 
-  // Force refresh tasks (rarely needed with real-time updates, but kept for manual refresh functionality)
   const refreshTasks = useCallback(() => {
-    // Only needed if subscriptions were somehow lost
     if (unsubscribersRef.current.length === 0 && user) {
       setIsLoading(true);
-
-      // Set up new listeners
       const dailyUnsubscribe = subscribeToTasks(user.uid, 'daily', (dailyTasks) => {
         setTasks(dailyTasks);
         setCounts(prevCounts => ({
@@ -212,6 +208,7 @@ const Dashboard: React.FC = () => {
           <TaskCard
             id={item.id}
             title={item.title}
+            category={item.category}
             completed={item.completed}
             priority={item.priority}
             onDelete={(id) => handleDeleteTask(id, tasks, setTasks, refreshTasks)}
