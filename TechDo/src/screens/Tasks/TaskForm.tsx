@@ -362,7 +362,6 @@ const TaskForm: React.FC = () => {
       return;
     }
 
-    // Check for empty title or description
     if (!title.trim()) {
       showToast({
         type: 'error',
